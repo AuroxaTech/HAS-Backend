@@ -9,6 +9,8 @@ class FavouriteProperty extends Model
 {
     use HasFactory;
       
+    protected $table = 'favourite_properties';
+    
     protected $fillable = [
         'user_id',
         'property_id',

@@ -107,16 +107,19 @@ class ApiController extends Controller
             'role_id' => 'required',
             'phone_number' => 'required',
             'device_token' => 'required',
-            'platform' => 'required'
+            'platform' => 'required',
+            'address' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:25|regex:/^\d{1,25}$/',
         ]);
-    
-        if ($validator->fails()) {
+
+        if ($validator->fails()) {  
             return response()->json([
                 'status'=>false,
                 'messages' => $validator->messages()->toArray(), 
                 'error' => 'invalid_fields_data'
             ], 202);
         }
+
         $image_name = '';
         if ($request->file('profileimage')) {
             $profileimage = $request->file('profileimage');
@@ -192,7 +195,9 @@ class ApiController extends Controller
                     'role_id' => $request->role_id,
                     'profileimage' => $image_name,
                     'platform' => $request->platform,
-                    'device_token' => $request->device_token
+                    'device_token' => $request->device_token,
+                    'address' => $request->address,
+                    'postal_code' => $request->postal_code,
                 ]);
     
                 Landlord::create([
@@ -239,7 +244,9 @@ class ApiController extends Controller
                         'role_id' => $request->role_id,
                         'profileimage' => $image_name,
                         'platform' => $request->platform,
-                        'device_token' => $request->device_token
+                        'device_token' => $request->device_token,
+                        'address' => $request->address,
+                        'postal_code' => $request->postal_code,
                     ]);
     
                     Tenant::create([
@@ -339,7 +346,9 @@ class ApiController extends Controller
                             'role_id' => $request->role_id,
                             'profileimage' => $image_name,
                             'platform' => $request->platform,
-                            'device_token' => $request->device_token
+                            'device_token' => $request->device_token,
+                            'address' => $request->address,
+                            'postal_code' => $request->postal_code,
                         ]);
     
                         ServiceProvider::create([
@@ -435,7 +444,9 @@ class ApiController extends Controller
                 'role_id' => $request->role_id,
                 'profileimage' => $image_name,
                 'platform' => $request->platform,
-                'device_token' => $request->device_token
+                'device_token' => $request->device_token,
+                'address' => $request->address,
+                'postal_code' => $request->postal_code,
             ]);
     
             Visitor::create([
@@ -900,8 +911,6 @@ class ApiController extends Controller
     
     public function allProperties(Request $request)
     {
-        // $userId = Auth::id();
-        // $properties = Property::paginate(20);
         $searchQuery = $request->query('search');
         $propertyType = $request->property_type;
         $subType = $request->sub_type;
@@ -911,6 +920,10 @@ class ApiController extends Controller
         $bathroom = $request->bathroom;
         $description = $request->description;
         $areaRange = $request->area_range;
+
+        $user = Auth::guard('api')->user();
+        $userId = $user ? $user->id : null;
+
         $propertiesQuery = Property::with(['user']);
 
         if ($minAmount && $maxAmount) {
@@ -940,7 +953,7 @@ class ApiController extends Controller
         if ($subType) {
             $propertiesQuery->where('property_sub_type', $subType);
         }
-        
+
         $properties = $propertiesQuery->paginate(20);
         if ($properties->isEmpty()) {
             return response()->json([
@@ -949,16 +962,23 @@ class ApiController extends Controller
                 'data' => []
             ], 404);
         }
-        // $userId = Auth::id();
-        // foreach ($properties as $s){
-        //     $favoriteproperties = FavouriteProperty::where('user_id', $userId)->where('property_id', $s->id)->where('fav_flag', 1)->first();
 
-        //     if($favoriteproperties){
-        //         $s->is_favorite = true;
-        //     }else{
-        //         $s->is_favorite = false;
-        //     }
-        // }
+        if (Auth::guard('api')->check()) {
+            $userId = Auth::guard('api')->user()->id;
+
+            $properties->load(['favoritedByUsers' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }]);
+
+            $properties->each(function ($property) use ($userId) {
+                $property->is_favorite = $property->favoritedByUsers->isNotEmpty();
+                unset($property->favoritedByUsers);
+            });
+        } else {
+            $properties->each(function ($property) {
+                $property->is_favorite = false;
+            });
+        }
          
         return response()->json([
             'status'=>true,
