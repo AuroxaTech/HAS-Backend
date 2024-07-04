@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Notifications\CustomResetPasswordNotification;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -32,6 +33,8 @@ class User extends Authenticatable
         'created_by',
         'platform',
         'device_token', // Add device_token to the fillable array
+        'address',
+        'postal_code',
     ];
 
     /**
@@ -59,5 +62,12 @@ class User extends Authenticatable
 
     public function role(){
         return $this->belongsTo(Role::class,'role_id','id');
+    }
+
+    public function favoriteProperties(): BelongsToMany
+    {
+        return $this->belongsToMany(Property::class, 'favourite_properties', 'user_id', 'property_id')
+            ->withPivot('fav_flag')
+            ->as('favorite');
     }
 }
