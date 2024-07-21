@@ -34,7 +34,7 @@ class User extends Authenticatable
         'platform',
         'device_token', // Add device_token to the fillable array
         'address',
-        'postal_code',
+        'postal_code'
     ];
 
     /**
@@ -47,7 +47,7 @@ class User extends Authenticatable
         'platform',
         'password',
         'remember_token',
-        'email_verified_at',
+        'email_verified_at'
     ];
 
     /**
@@ -57,6 +57,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'approved_at' => 'datetime'
     ];
 
 

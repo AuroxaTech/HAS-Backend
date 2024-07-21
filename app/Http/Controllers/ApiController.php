@@ -920,6 +920,7 @@ class ApiController extends Controller
         $bathroom = $request->bathroom;
         $description = $request->description;
         $areaRange = $request->area_range;
+        $type = $request->type;
 
         $user = Auth::guard('api')->user();
         $userId = $user ? $user->id : null;
@@ -945,6 +946,10 @@ class ApiController extends Controller
         }
         if ($areaRange) { 
             $propertiesQuery->where('area_range', 'like', '%' . $areaRange . '%'); 
+        }
+
+        if ($type) {
+            $propertiesQuery->where('type', $type);
         }
 
         if ($propertyType) {

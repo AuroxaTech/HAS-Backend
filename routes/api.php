@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Api\ApproveServiceProvide;
+use App\Http\Controllers\Api\UpdateServiceProviderRequest;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,81 +36,89 @@ Route::post('/all-properties', [ApiController::class, 'allProperties']);
 Route::get('/single-properties/{id}', [ApiController::class, 'singleProperty']);
 // Update Profile
 Route::get('/logout', [ApiController::class, 'logout']);
-Route::middleware('auth:sanctum')->post('/update-profile', [ApiController::class, 'updateProfile']);
-Route::middleware('auth:sanctum')->post('/update-password', [ApiController::class, 'updatePassword']);
-// Property Routes
-Route::middleware('auth:sanctum')->get('/get-properties', [ApiController::class, 'getProperties']);
-Route::middleware('auth:sanctum')->get('/get-property/{id}', [ApiController::class, 'getProperty']);
-Route::middleware('auth:sanctum')->post('/add-property', [ApiController::class, 'addProperty']);
-Route::middleware('auth:sanctum')->post('/update-property/{id}', [ApiController::class, 'updateProperty']);
-// Service 
-Route::middleware('auth:sanctum')->post('/get-services', [ApiController::class, 'getServices']);
-// Route::middleware('auth:sanctum')->get('/all-services', [ApiController::class, 'allServices']);
-Route::middleware('auth:sanctum')->post('/add-service', [ApiController::class, 'storeService']);
-Route::middleware('auth:sanctum')->post('/update-service/{id}',  [ApiController::class, 'updateServices']);
-Route::middleware('auth:sanctum')->get('/get-service/{id}', [ApiController::class, 'getService']);
-Route::middleware('auth:sanctum')->delete('/destroy-service/{id}',  [ApiController::class, 'destroyService']);
 
-// 15 Feb 2024 
-
-Route::middleware('auth:sanctum')->post('/add-fav-provider', [ApiController::class, 'addFavouriteProvider']);
-Route::middleware('auth:sanctum')->post('/add-fav-property', [ApiController::class, 'addFavouriteProperty']);
-Route::middleware('auth:sanctum')->post('/get-favourite', [ApiController::class, 'getFavourite']);
-Route::middleware('auth:sanctum')->post('/all-serviceprovider', [ApiController::class, 'getServiceProviders']);
-Route::middleware('auth:sanctum')->get('/get-serviceprovider/{id}', [ApiController::class, 'getServiceProvider']);
-
-//  18 FEB 2024
-Route::middleware('auth:sanctum')->get('/get-user-by-id/{id}', [ApiController::class, 'getUserById']);
-Route::middleware('auth:sanctum')->get('/get-notification', [ApiController::class, 'getNotificationByUserId']);
-Route::middleware('auth:sanctum')->get('/delete-notification/{id}', [ApiController::class, 'destroyNotification']);
-Route::middleware('auth:sanctum')->post('/add-service-request', [ApiController::class, 'addServiceRequest']);
-Route::middleware('auth:sanctum')->post('/get-service-request', [ApiController::class, 'getServiceRequest']);
-Route::middleware('auth:sanctum')->post('/get-user-request', [ApiController::class, 'getUserRequest']);
-Route::middleware('auth:sanctum')->get('/get-service-provider-request/{id}', [ApiController::class, 'getServiceProviderRequest']);
-Route::middleware('auth:sanctum')->post('/add-service-job', [ApiController::class, 'addServiceJob']);
-Route::middleware('auth:sanctum')->post('/get-service-job', [ApiController::class, 'getServiceJob']);
-
-Route::middleware('auth:sanctum')->get('/all-propertytype', [ApiController::class, 'allPropertyType']);
-Route::middleware('auth:sanctum')->get('/get-property-sub-type/{id}', [ApiController::class, 'getPropertySubType']);
-// 26-02-24
-Route::middleware('auth:sanctum')->post('/service-request-decline', [ApiController::class, 'addServiceRequestDecline']);
-Route::middleware('auth:sanctum')->post('/mark-service-job-status', [ApiController::class, 'markServiceStatusJob']);
-Route::middleware('auth:sanctum')->post('/service-job-by-status', [ApiController::class, 'serviceJobDetailWithStatus']);
-Route::middleware('auth:sanctum')->get('/get-service-provider-job', [ApiController::class, 'getServiceProvidersJob']);
-Route::middleware('auth:sanctum')->get('/get-job-detail/{id}', [ApiController::class, 'getJobDetails']);
-Route::middleware('auth:sanctum')->get('/get-provider-rating', [ApiController::class, 'getProviderReviews']);
-
-// 28-02-24
-Route::middleware('auth:sanctum')->post('/make-service-feedback', [ApiController::class, 'markServiceReview']);
-Route::middleware('auth:sanctum')->post('/get-service-feedback', [ApiController::class, 'getServiceReview']);
-Route::middleware('auth:sanctum')->post('/add-fav-service', [ApiController::class, 'addFavouriteService']);
-Route::middleware('auth:sanctum')->get('/delete-property/{id}', [ApiController::class, 'deleteProperty']);
-Route::middleware('auth:sanctum')->post('/get-service-favourite', [ApiController::class, 'getServiceFavourite']);
-
-// 03-03-24
-
-Route::middleware('auth:sanctum')->get('/inbox-listing', [ApiController::class, 'inboxListing']);
-Route::middleware('auth:sanctum')->post('/chat-messages', [ApiController::class, 'getChatMessages']);
-Route::middleware('auth:sanctum')->post('/send-message', [ApiController::class, 'sendMessage']);
-
-// Route::middleware('auth:sanctum')->post('/message', [ApiController::class, 'sendMessage']);
-// Route::middleware('auth:sanctum')->post('/get-messages', [ApiController::class, 'getMessages']);
-// Route::middleware('auth:sanctum')->get('/get-inbox-listing', [ApiController::class, 'inboxListing']);
-
-// contract
-Route::middleware('auth:sanctum')->post('/add-contract', [ApiController::class, 'storeContract']);
-Route::middleware('auth:sanctum')->get('/get-contract', [ApiController::class, 'getContract']);
-Route::middleware('auth:sanctum')->get('/get-tanent-contract-property', [ApiController::class, 'getTanentContractProperty']);
-Route::middleware('auth:sanctum')->get('/get-landlord-contract', [ApiController::class, 'getLandlordContract']);
-Route::middleware('auth:sanctum')->post('/mark-contract-status', [ApiController::class, 'markContractStatus']);
-Route::middleware('auth:sanctum')->get('/get-contract-detail/{id}', [ApiController::class, 'getContractDetail']);
-
-Route::middleware('auth:sanctum')->get('/approved-contract-property', [ApiController::class, 'approvedContractProperty']);
-/////////////////////////  Stat /////////////////////////////
-Route::middleware('auth:sanctum')->post('/service-provider-stat', [ApiController::class, 'serviceProviderstat']);
-Route::middleware('auth:sanctum')->post('/landlord-stat', [ApiController::class, 'Landlordstat']);
-Route::middleware('auth:sanctum')->post('/visitor-stat', [ApiController::class, 'Visitorstat']);
-Route::middleware('auth:sanctum')->post('/tenant-stat', [ApiController::class, 'Tenantstat']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/service-provider/{user}/approve', ApproveServiceProvide::class);
+    Route::post('/service-provider/{serviceProviderRequest}/request', UpdateServiceProviderRequest::class);
+    
+    Route::middleware(['is.approved.sp'])->group(function () {
+        Route::post('/update-profile', [ApiController::class, 'updateProfile']);
+        Route::post('/update-password', [ApiController::class, 'updatePassword']);
+        // Property Routes
+        Route::get('/get-properties', [ApiController::class, 'getProperties']);
+        Route::get('/get-property/{id}', [ApiController::class, 'getProperty']);
+        Route::post('/add-property', [ApiController::class, 'addProperty']);
+        Route::post('/update-property/{id}', [ApiController::class, 'updateProperty']);
+        // Service 
+        Route::post('/get-services', [ApiController::class, 'getServices']);
+        // Route::get('/all-services', [ApiController::class, 'allServices']);
+        Route::post('/add-service', [ApiController::class, 'storeService']);
+        Route::post('/update-service/{id}',  [ApiController::class, 'updateServices']);
+        Route::get('/get-service/{id}', [ApiController::class, 'getService']);
+        Route::delete('/destroy-service/{id}',  [ApiController::class, 'destroyService']);
+    
+        // 15 Feb 2024 
+    
+        Route::post('/add-fav-provider', [ApiController::class, 'addFavouriteProvider']);
+        Route::post('/add-fav-property', [ApiController::class, 'addFavouriteProperty']);
+        Route::post('/get-favourite', [ApiController::class, 'getFavourite']);
+        Route::post('/all-serviceprovider', [ApiController::class, 'getServiceProviders']);
+        Route::get('/get-serviceprovider/{id}', [ApiController::class, 'getServiceProvider']);
+    
+        //  18 FEB 2024
+        Route::get('/get-user-by-id/{id}', [ApiController::class, 'getUserById']);
+        Route::get('/get-notification', [ApiController::class, 'getNotificationByUserId']);
+        Route::get('/delete-notification/{id}', [ApiController::class, 'destroyNotification']);
+        Route::post('/add-service-request', [ApiController::class, 'addServiceRequest']);
+        Route::post('/get-service-request', [ApiController::class, 'getServiceRequest']);
+        Route::post('/get-user-request', [ApiController::class, 'getUserRequest']);
+        Route::get('/get-service-provider-request/{id}', [ApiController::class, 'getServiceProviderRequest']);
+        Route::post('/add-service-job', [ApiController::class, 'addServiceJob']);
+        Route::post('/get-service-job', [ApiController::class, 'getServiceJob']);
+    
+        Route::get('/all-propertytype', [ApiController::class, 'allPropertyType']);
+        Route::get('/get-property-sub-type/{id}', [ApiController::class, 'getPropertySubType']);
+        // 26-02-24
+        Route::post('/service-request-decline', [ApiController::class, 'addServiceRequestDecline']);
+        Route::post('/mark-service-job-status', [ApiController::class, 'markServiceStatusJob']);
+        Route::post('/service-job-by-status', [ApiController::class, 'serviceJobDetailWithStatus']);
+        Route::get('/get-service-provider-job', [ApiController::class, 'getServiceProvidersJob']);
+        Route::get('/get-job-detail/{id}', [ApiController::class, 'getJobDetails']);
+        Route::get('/get-provider-rating', [ApiController::class, 'getProviderReviews']);
+    
+        // 28-02-24
+        Route::post('/make-service-feedback', [ApiController::class, 'markServiceReview']);
+        Route::post('/get-service-feedback', [ApiController::class, 'getServiceReview']);
+        Route::post('/add-fav-service', [ApiController::class, 'addFavouriteService']);
+        Route::get('/delete-property/{id}', [ApiController::class, 'deleteProperty']);
+        Route::post('/get-service-favourite', [ApiController::class, 'getServiceFavourite']);
+    
+        // 03-03-24
+    
+        Route::get('/inbox-listing', [ApiController::class, 'inboxListing']);
+        Route::post('/chat-messages', [ApiController::class, 'getChatMessages']);
+        Route::post('/send-message', [ApiController::class, 'sendMessage']);
+    
+        // Route::post('/message', [ApiController::class, 'sendMessage']);
+        // Route::post('/get-messages', [ApiController::class, 'getMessages']);
+        // Route::get('/get-inbox-listing', [ApiController::class, 'inboxListing']);
+    
+        // contract
+        Route::post('/add-contract', [ApiController::class, 'storeContract']);
+        Route::get('/get-contract', [ApiController::class, 'getContract']);
+        Route::get('/get-tanent-contract-property', [ApiController::class, 'getTanentContractProperty']);
+        Route::get('/get-landlord-contract', [ApiController::class, 'getLandlordContract']);
+        Route::post('/mark-contract-status', [ApiController::class, 'markContractStatus']);
+        Route::get('/get-contract-detail/{id}', [ApiController::class, 'getContractDetail']);
+    
+        Route::get('/approved-contract-property', [ApiController::class, 'approvedContractProperty']);
+        /////////////////////////  Stat /////////////////////////////
+        Route::post('/service-provider-stat', [ApiController::class, 'serviceProviderstat']);
+        Route::post('/landlord-stat', [ApiController::class, 'Landlordstat']);
+        Route::post('/visitor-stat', [ApiController::class, 'Visitorstat']);
+        Route::post('/tenant-stat', [ApiController::class, 'Tenantstat']);
+    });
+});
 
 // Notifications
 Route::post('/send-notification', [ApiController::class, 'sendNotification']);
