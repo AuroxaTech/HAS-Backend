@@ -7,6 +7,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\ApproveServiceProvide;
 use App\Http\Controllers\Api\UpdateServiceProviderRequest;
+use App\Http\Controllers\Api\DeleteUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['is.approved.sp'])->group(function () {
         Route::post('/update-profile', [ApiController::class, 'updateProfile']);
         Route::post('/update-password', [ApiController::class, 'updatePassword']);
+        Route::delete('/user/delete', DeleteUserController::class);
+
         // Property Routes
         Route::get('/get-properties', [ApiController::class, 'getProperties']);
         Route::get('/get-property/{id}', [ApiController::class, 'getProperty']);

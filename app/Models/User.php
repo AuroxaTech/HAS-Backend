@@ -10,10 +10,11 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Notifications\CustomResetPasswordNotification;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable , HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -60,6 +61,15 @@ class User extends Authenticatable
         'approved_at' => 'datetime'
     ];
 
+    /**
+     * Get all of the properties for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function properties(): HasMany
+    {
+        return $this->hasMany(Property::class, 'user_id');
+    }
 
     public function role(){
         return $this->belongsTo(Role::class,'role_id','id');
