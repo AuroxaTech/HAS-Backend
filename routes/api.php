@@ -31,6 +31,7 @@ Route::get('/clear-api', function () {
 
 Route::get('/dropdown', ['uses' =>'App\Http\Controllers\ApiController@getDropdownData','as' => 'getdropdowndata']);
 Route::post('/register', ['uses' =>'App\Http\Controllers\ApiController@userRegister','as' => 'register']);
+
 Route::get('/login', ['uses' =>'App\Http\Controllers\ApiController@userLogin','as' => 'login']);
 
 Route::post('/all-properties', [ApiController::class, 'allProperties']);
