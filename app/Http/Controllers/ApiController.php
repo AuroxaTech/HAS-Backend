@@ -103,6 +103,7 @@ class ApiController extends Controller
         $validator = Validator::make($request->all(), [
             'fullname' => 'required',
             'email' => 'required|unique:users',
+            'username' => 'required|unique:users',
             'password' => 'required|confirmed',
             'role_id' => 'required',
             'phone_number' => 'required',
@@ -190,6 +191,7 @@ class ApiController extends Controller
                 $user = User::create([
                     'fullname' => $request->fullname,
                     'email' => $request->email,
+                    'username' => $request->username,
                     'phone_number' => $request->phone_number,
                     'password' => Hash::make($request->password),
                     'role_id' => $request->role_id,
@@ -239,6 +241,7 @@ class ApiController extends Controller
                     $user = User::create([
                         'fullname' => $request->fullname,
                         'email' => $request->email,
+                        'username' => $request->username,
                         'phone_number' => $request->phone_number,
                         'password' => Hash::make($request->password),
                         'role_id' => $request->role_id,
@@ -271,6 +274,7 @@ class ApiController extends Controller
                     $user = User::create([
                         'fullname' => $request->fullname,
                         'email' => $request->email,
+                        'username' => $request->username,
                         'phone_number' => $request->phone_number,
                         'password' => Hash::make($request->password),
                         'role_id' => $request->role_id,
@@ -341,6 +345,7 @@ class ApiController extends Controller
                         $user = User::create([
                             'fullname' => $request->fullname,
                             'email' => $request->email,
+                            'username' => $request->username,
                             'phone_number' => $request->phone_number,
                             'password' => Hash::make($request->password),
                             'role_id' => $request->role_id,
@@ -401,6 +406,7 @@ class ApiController extends Controller
                         $user = User::create([
                             'fullname' => $request->fullname,
                             'email' => $request->email,
+                            'username' => $request->username,
                             'phone_number' => $request->phone_number,
                             'password' => Hash::make($request->password),
                             'role_id' => $request->role_id,
@@ -439,6 +445,7 @@ class ApiController extends Controller
             $user = User::create([
                 'fullname' => $request->fullname,
                 'email' => $request->email,
+                'username' => $request->username,
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'role_id' => $request->role_id,
