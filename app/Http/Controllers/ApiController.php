@@ -471,7 +471,19 @@ class ApiController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required',
+            'username' => 'required|unique:users,username,' . $user->id,
+            'phone_number' => 'required',
+        ]);
 
+        if ($validator->fails()) {  
+            return response()->json([
+                'status'=>false,
+                'messages' => $validator->messages()->toArray(), 
+                'error' => 'invalid_fields_data'
+            ], 202);
+        }
         $image_name = '';
         if ($request->file('profileimage')) {
             $previousprofilePath = public_path('/assets/profile_images') . '/' . $user->profileimage;
@@ -493,6 +505,7 @@ class ApiController extends Controller
 
         $update_data = array(
             'fullname' => $request->fullname,
+            'username' => $request->username,
             'phone_number' => $request->phone_number,
             'profileimage' => $image_name
         );
