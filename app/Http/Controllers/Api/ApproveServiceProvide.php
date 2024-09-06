@@ -16,10 +16,11 @@ class ApproveServiceProvide extends Controller
      * @return \Illuminate\Http\Response
      */
     public function __invoke(Request $request, User $user)
-    {   
-        if (auth()->user()->id == $user->id) {
-            return response()->json(['message' => 'Invalid action'], 400);
-        }
+    {      
+
+        // if (auth()->user()->id == $user->id) {
+        //     return response()->json(['message' => 'Invalid action'], 400);
+        // }
         
         // Validate the query parameter
         $request->validate([
@@ -29,10 +30,10 @@ class ApproveServiceProvide extends Controller
         $action = $request->action;
 
         if ($action === 'approve') {
-            $user->approved_at = Carbon::now();
+            $user->approved_at = true;
             $message = 'User approved successfully';
         } elseif ($action === 'unapprove') {
-            $user->approved_at = null;
+            $user->approved_at = false;
             $message = 'User unapproved successfully';
         } else {
             return response()->json(['message' => 'Invalid action'], 400);
@@ -40,6 +41,9 @@ class ApproveServiceProvide extends Controller
 
         $user->save();
 
-        return response()->json(['message' => $message], 200);
+        return response()->json([
+            'status' => true,
+            'messages' => $message
+        ], 200);
     }
 }

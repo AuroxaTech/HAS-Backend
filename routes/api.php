@@ -39,7 +39,7 @@ Route::get('/single-properties/{id}', [ApiController::class, 'singleProperty']);
 Route::get('/logout', [ApiController::class, 'logout']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/service-provider/{user}/approve', ApproveServiceProvide::class);
+   
     Route::post('/service-provider/{serviceProviderRequest}/request', UpdateServiceProviderRequest::class);
     
     Route::middleware(['is.approved.sp'])->group(function () {
@@ -161,3 +161,4 @@ Route::delete('/delete-property/{id}', ['uses' =>'App\Http\Controllers\Dashboard
 Route::delete('/delete-contract/{id}', ['uses' =>'App\Http\Controllers\DashboardController@destroyContract','as' => 'destroycontract']);
 Route::get('/get-tenant-contract/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getTanentContract','as' => 'gettanentcontract']);
 Route::get('/get-serviceprovider-service/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getProviderServices','as' => 'getproviderservices']);
+Route::post('/service-provider/{user}/approve', ApproveServiceProvide::class);
