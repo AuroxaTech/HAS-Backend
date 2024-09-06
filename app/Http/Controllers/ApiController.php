@@ -100,6 +100,7 @@ class ApiController extends Controller
 
     public function userRegister(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'fullname' => 'required',
             'email' => 'required|unique:users',

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('approved_at')->nullable()->after('postal_code');
+            $table->boolean('approved_at')->nullable()->after('postal_code');
         });
     }
 

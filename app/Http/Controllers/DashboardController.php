@@ -273,7 +273,9 @@ class DashboardController extends Controller
     
     public function getProviderServices($id){
 
-        $service = Service::with(['user','provider'])->whereuser_id($id)->get();
+        
+        $service = ServiceProvider::with(['user'])->where('user_id', $id)->get();
+
         
         if ($service->isEmpty()) {
             return response()->json([
