@@ -20,6 +20,6 @@ services:
       - key: DB_DATABASE
         value: laravel
       - key: DB_USERNAME
-        value: your_db_username
+        value: root
       - key: DB_PASSWORD
         value: 
