@@ -38,6 +38,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\URL;
 use Mail;
 use App\Mail\UserMail;
+use Illuminate\Auth\Events\Registered;
+
 
 class ApiController extends Controller
 {
@@ -456,7 +458,7 @@ class ApiController extends Controller
                 'address' => $request->address,
                 'postal_code' => $request->postal_code,
             ]);
-    
+            event(new Registered($user));
             Visitor::create([
                 'user_id' => $user->id,
             ]);
@@ -583,9 +585,11 @@ class ApiController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials) ) {
             if (Auth::check()) {
+               
                 $user = Auth::user();
+                
                 $token = $user->createToken('authToken')->plainTextToken;
                 // echo $user->role_id;
                 // exit;
@@ -1608,6 +1612,33 @@ class ApiController extends Controller
         ], 200);
 
     }
+    public function getUserByName(Request $request)
+{
+    // Validate the request to ensure 'username_or_email' is provided
+    $request->validate([
+        'username_or_email' => 'required|string'
+    ]);
+
+    $searchTerm = $request->input('username_or_email');
+
+    // Find users where username or email contains the search term
+    $users = User::where('username', 'like', "%{$searchTerm}%")
+                ->orWhere('email', 'like', "%{$searchTerm}%")
+                ->get(); // Use get() to return all matching results
+
+    if ($users->isEmpty()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'No users found'
+        ], 404); // Use 404 for "Not Found"
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Users Found',
+        'data' => $users
+    ], 200);
+}
 
     //  18 Feb 2024
     public function getUserById($id){ 

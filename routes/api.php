@@ -31,14 +31,16 @@ Route::get('/clear-api', function () {
 
 Route::get('/dropdown', ['uses' =>'App\Http\Controllers\ApiController@getDropdownData','as' => 'getdropdowndata']);
 Route::post('/register', ['uses' =>'App\Http\Controllers\ApiController@userRegister','as' => 'register']);
-
-Route::get('/login', ['uses' =>'App\Http\Controllers\ApiController@userLogin','as' => 'login']);
-
+Route::get('/email/verify/{id}/{hash}', ['uses' => 'App\Http\Controllers\VerificationController@verify', 'as' => 'verification.verify']);
+//Auth::routes(['verify' => true]);
 Route::post('/all-properties', [ApiController::class, 'allProperties']);
 Route::get('/single-properties/{id}', [ApiController::class, 'singleProperty']);
 // Update Profile
 Route::get('/logout', [ApiController::class, 'logout']);
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/login', ['uses' =>'App\Http\Controllers\ApiController@userLogin','as' => 'login']);
 
+});
 Route::middleware(['auth:sanctum'])->group(function () {
    
     Route::post('/service-provider/{serviceProviderRequest}/request', UpdateServiceProviderRequest::class);
@@ -70,6 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-serviceprovider/{id}', [ApiController::class, 'getServiceProvider']);
     
         //  18 FEB 2024
+        Route::get('/get-user', [App\Http\Controllers\ApiController::class, 'getUserByName']);
         Route::get('/get-user-by-id/{id}', [ApiController::class, 'getUserById']);
         Route::get('/get-notification', [ApiController::class, 'getNotificationByUserId']);
         Route::get('/delete-notification/{id}', [ApiController::class, 'destroyNotification']);
@@ -148,6 +151,7 @@ Route::view('/socket', 'socket')->name('socket');
 
 // Route::get('/websocket', [WebSocketController::class, 'handleWebSocket']);
 
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 
 Route::post('/websocket', ['uses' =>'App\Http\Controllers\WebSocketController@handleWebSocket','as' => 'handleWebSocket']);
 
