@@ -18,8 +18,11 @@ Route::get('/clear', function () {
     Artisan::call('optimize:clear');
     return "Cleared!";
 });
+//Route::get('/logout', [ApiController::class, 'logout']);
 
-
+//Route::get('/home', function () {
+//    return view('home');
+//});
 Route::get('/test', function () {
     return view('test');
 });

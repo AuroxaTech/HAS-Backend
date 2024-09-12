@@ -35,6 +35,7 @@ Route::get('/email/verify/{id}/{hash}', ['uses' => 'App\Http\Controllers\Verific
 //Auth::routes(['verify' => true]);
 Route::post('/all-properties', [ApiController::class, 'allProperties']);
 Route::get('/single-properties/{id}', [ApiController::class, 'singleProperty']);
+Route::get('/verify-email/{token}', [ApiController::class, 'verifyEmail']);
 // Update Profile
 Route::get('/logout', [ApiController::class, 'logout']);
 

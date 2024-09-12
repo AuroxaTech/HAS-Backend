@@ -41,6 +41,8 @@ use App\Mail\UserMail;
 use Illuminate\Auth\Events\Registered;
 
 
+
+
 class ApiController extends Controller
 {
     public function __construct()
@@ -203,6 +205,7 @@ class ApiController extends Controller
                     'device_token' => $request->device_token,
                     'address' => $request->address,
                     'postal_code' => $request->postal_code,
+                    'verification_token' => Str::random(64)
                 ]);
     
                 Landlord::create([
@@ -458,7 +461,8 @@ class ApiController extends Controller
                 'address' => $request->address,
                 'postal_code' => $request->postal_code,
             ]);
-            event(new Registered($user));
+            $this->sendVerificationEmail($user);
+
             Visitor::create([
                 'user_id' => $user->id,
             ]);
@@ -466,10 +470,20 @@ class ApiController extends Controller
 
         return response()->json([
             'status' => true,
-            'messages' => 'Registered Successfully'
+            'messages' => 'Registered Successfully',
+            'data'=>$this->sendVerificationEmail($user)
         ], 200);
     }
+    protected function sendVerificationEmail($user)
+    {
+        $verificationLink = url('verify-email/' . $user->verification_token);
 
+        Mail::send('emails.verifyEmail', ['link' => $verificationLink], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Verify your email');
+        });
+    }
+    
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -589,7 +603,12 @@ class ApiController extends Controller
             if (Auth::check()) {
                
                 $user = Auth::user();
-                
+                if ($user->is_verified == 0) {
+                  
+                    return response()->json([
+                        'error' => 'Your email address is not verified. Please verify your email to log in.'
+                    ], 403); 
+                }
                 $token = $user->createToken('authToken')->plainTextToken;
                 // echo $user->role_id;
                 // exit;
