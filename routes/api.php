@@ -37,10 +37,10 @@ Route::post('/all-properties', [ApiController::class, 'allProperties']);
 Route::get('/single-properties/{id}', [ApiController::class, 'singleProperty']);
 // Update Profile
 Route::get('/logout', [ApiController::class, 'logout']);
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
     Route::get('/login', ['uses' =>'App\Http\Controllers\ApiController@userLogin','as' => 'login']);
 
-});
+
 Route::middleware(['auth:sanctum'])->group(function () {
    
     Route::post('/service-provider/{serviceProviderRequest}/request', UpdateServiceProviderRequest::class);
