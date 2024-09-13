@@ -32,14 +32,15 @@ Route::get('/clear-api', function () {
 Route::get('/dropdown', ['uses' =>'App\Http\Controllers\ApiController@getDropdownData','as' => 'getdropdowndata']);
 Route::post('/register', ['uses' =>'App\Http\Controllers\ApiController@userRegister','as' => 'register']);
 Route::get('/email/verify/{id}/{hash}', ['uses' => 'App\Http\Controllers\VerificationController@verify', 'as' => 'verification.verify']);
-//Auth::routes(['verify' => true]);
+
 Route::post('/all-properties', [ApiController::class, 'allProperties']);
 Route::get('/single-properties/{id}', [ApiController::class, 'singleProperty']);
+
 Route::get('/verify-email/{token}', [ApiController::class, 'verifyEmail']);
 // Update Profile
 Route::get('/logout', [ApiController::class, 'logout']);
 
-    Route::get('/login', ['uses' =>'App\Http\Controllers\ApiController@userLogin','as' => 'login']);
+    Route::post('/login', ['uses' =>'App\Http\Controllers\ApiController@userLogin','as' => 'login']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -165,6 +166,7 @@ Route::get('/get-all-contracts', ['uses' =>'App\Http\Controllers\DashboardContro
 Route::get('/get-contract/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getContract','as' => 'getcontract']);
 Route::delete('/delete-property/{id}', ['uses' =>'App\Http\Controllers\DashboardController@destroyProperty','as' => 'destroyproperty']);
 Route::delete('/delete-contract/{id}', ['uses' =>'App\Http\Controllers\DashboardController@destroyContract','as' => 'destroycontract']);
+Route::get('/get-user-count', ['uses' =>'App\Http\Controllers\DashboardController@getCountUsers','as' => 'getuserscount']);
 Route::get('/get-tenant-contract/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getTanentContract','as' => 'gettanentcontract']);
 Route::get('/get-serviceprovider-service/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getProviderServices','as' => 'getproviderservices']);
 Route::post('/service-provider/{user}/approve', ApproveServiceProvide::class);

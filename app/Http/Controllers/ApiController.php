@@ -256,6 +256,7 @@ class ApiController extends Controller
                         'device_token' => $request->device_token,
                         'address' => $request->address,
                         'postal_code' => $request->postal_code,
+                        'verification_token' => Str::random(64)
                     ]);
     
                     Tenant::create([
@@ -286,7 +287,8 @@ class ApiController extends Controller
                         'role_id' => $request->role_id,
                         'profileimage' => $image_name,
                         'platform' => $request->platform,
-                        'device_token' => $request->device_token
+                        'device_token' => $request->device_token,
+                        'verification_token' => Str::random(64)
                     ]);
     
                     Tenant::create([
@@ -360,6 +362,7 @@ class ApiController extends Controller
                             'device_token' => $request->device_token,
                             'address' => $request->address,
                             'postal_code' => $request->postal_code,
+                            'verification_token' => Str::random(64)
                         ]);
     
                         ServiceProvider::create([
@@ -418,7 +421,8 @@ class ApiController extends Controller
                             'role_id' => $request->role_id,
                             'profileimage' => $image_name,
                             'platform' => $request->platform,
-                            'device_token' => $request->device_token
+                            'device_token' => $request->device_token,
+                            'verification_token' => Str::random(64)
                         ]);
     
                         ServiceProvider::create([
@@ -460,30 +464,61 @@ class ApiController extends Controller
                 'device_token' => $request->device_token,
                 'address' => $request->address,
                 'postal_code' => $request->postal_code,
+                'verification_token' => Str::random(64)
             ]);
-            $this->sendVerificationEmail($user);
+           
 
             Visitor::create([
                 'user_id' => $user->id,
             ]);
+           
         }
-
+        $this->sendVerificationEmail($user);
         return response()->json([
             'status' => true,
-            'messages' => 'Registered Successfully',
-            'data'=>$this->sendVerificationEmail($user)
+            'messages' => 'Registered Successfully , Please check your Email to Verify'
+            
         ], 200);
     }
     protected function sendVerificationEmail($user)
-    {
-        $verificationLink = url('verify-email/' . $user->verification_token);
+{
+    $verificationLink = url('verify-email/' . $user->verification_token);
 
-        Mail::send('emails.verifyEmail', ['link' => $verificationLink], function ($message) use ($user) {
-            $message->to($user->email);
-            $message->subject('Verify your email');
-        });
+    Mail::send('emails.verifyEmail', ['link' => $verificationLink, 'user'=>$user], function ($message) use ($user) {
+        $message->to($user->email);
+        $message->subject('Verify your email');
+    });
+}
+    public function verifyEmail($token)
+    {
+       
+        $user = User::where('verification_token', $token)->first();
+
+       
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid verification token.'
+            ], 404);
+        }
+
+        if ($user->_is_verified) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Email already verified.'
+            ], 200);
+        }
+
+        
+        $user->is_verified = 1;
+        $user->verification_token = null; 
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Email verified successfully.'
+        ], 200);
     }
-    
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
