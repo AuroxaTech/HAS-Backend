@@ -195,7 +195,33 @@ class DashboardController extends Controller
             'message' => 'Data Found.',
         ], 200);
     }
-    
+    public function getCountUsers()
+    {
+        $landlordsCount = User::where('role_id', 1)->count();
+        $tenantsCount = User::where('role_id', 2)->count();
+        $serviceProvidersCount = User::where('role_id', 3)->count();
+        $contractsCount = Contract::where('id', '>', 1)->count();
+        
+        if ($landlordsCount === 0 && $tenantsCount === 0 && $serviceProvidersCount === 0 && $contractsCount === 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No Data Found.',
+                'data' => []
+            ], 404);
+        }
+        
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'landlords_count' => $landlordsCount,
+                'tenants_count' => $tenantsCount,
+                'service_providers_count' => $serviceProvidersCount,
+                'contracts_count' => $contractsCount
+                
+            ],
+            'message' => 'Data Found....'
+        ], 200);
+    }
     public function getContract($id){
 
         $contract = Contract::with(['property','tenant','landlord'])->whereid($id)->get();
@@ -255,7 +281,7 @@ class DashboardController extends Controller
 
     public function getTanentContract($id){
 
-        $contract = Contract::with(['property','tenant','landlord'])->whereuser_id($id)->get();
+        $contract = Contract::with(['property', 'tenant', 'landlord']) ->where('user_id', $id)->get();
         if ($contract->isEmpty()) {
             return response()->json([
                 'status' => false,
