@@ -69,33 +69,33 @@ class ApiController extends Controller
                 ];
             case 'no_of_property':
                 return [
-                    '1'   => '1',
-                    '2'   => '2',
-                    '3'   => '3',
-                    '4'   => '4',
-                    '5'   => '5',
-                    '6'   => '6',
-                    '7'   => '7',
-                    '8'   => '8',
-                    '8'   => '8',
-                    '9'   => '9',
-                    '9'   => '9',
-                    '10'   => '10'
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                    '5' => '5',
+                    '6' => '6',
+                    '7' => '7',
+                    '8' => '8',
+                    '8' => '8',
+                    '9' => '9',
+                    '9' => '9',
+                    '10' => '10'
                 ];
             case 'property_type':
                 return [
-                    '1'   => 'Commmercial',
-                    '2'   => 'Residential'
+                    '1' => 'Commmercial',
+                    '2' => 'Residential'
                 ];
             case 'last_status':
                 return [
-                    '1'   => 'Rent',
-                    '2'   => 'Own House'
+                    '1' => 'Rent',
+                    '2' => 'Own House'
                 ];
             case 'services':
                 return [
-                    '1'   => 'Electrician',
-                    '2'   => 'Plumber'
+                    '1' => 'Electrician',
+                    '2' => 'Plumber'
                 ];
             default:
                 return [];
@@ -104,7 +104,7 @@ class ApiController extends Controller
 
     public function userRegister(Request $request)
     {
-        
+
         $validator = Validator::make($request->all(), [
             'fullname' => 'required',
             'email' => 'required|unique:users',
@@ -118,10 +118,10 @@ class ApiController extends Controller
             'postal_code' => 'required|string|max:25|regex:/^\d{1,25}$/',
         ]);
 
-        if ($validator->fails()) {  
+        if ($validator->fails()) {
             return response()->json([
-                'status'=>false,
-                'messages' => $validator->messages()->toArray(), 
+                'status' => false,
+                'messages' => $validator->messages()->toArray(),
                 'error' => 'invalid_fields_data'
             ], 202);
         }
@@ -131,11 +131,11 @@ class ApiController extends Controller
             $profileimage = $request->file('profileimage');
             $image = 'Profile-' . uniqid() . '-' . $profileimage->getClientOriginalName();
             $filePath = public_path('/assets/profile_images');
-    
+
             if (!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 0777, true, true);
             }
-    
+
             $img = Image::make($profileimage->getRealPath());
             $img->save($filePath . '/' . $image);
             $image_name = $image;
@@ -144,55 +144,55 @@ class ApiController extends Controller
             if ($request->type && $request->city && $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom) {
                 $bill_image_name = '';
                 $comma_separated_names = '';
-    
+
                 if ($request->file('electricity_bill')) {
                     $electricity_bill = $request->file('electricity_bill');
                     $billimage = 'ElectricityBill-' . uniqid() . '-' . $electricity_bill->getClientOriginalName();
                     $filePath = public_path('/assets/electricity_bill');
-    
+
                     if (!File::isDirectory($filePath)) {
                         File::makeDirectory($filePath, 0777, true, true);
                     }
-    
+
                     $billimg = Image::make($electricity_bill->getRealPath());
                     $billimg->save($filePath . '/' . $billimage);
                     $bill_image_name = $billimage;
                 } else {
                     return response()->json([
-                        'status'=>false,
-                        'messages' => 'Electricity Bill Required', 
+                        'status' => false,
+                        'messages' => 'Electricity Bill Required',
                         'data' => []
                     ], 202);
                     // return response()->json(['message' => 'Electricity Bill Required'], 400);
                 }
-    
+
                 if ($request->hasFile('property_images')) {
                     $files = $request->file('property_images');
                     $file_names = [];
-    
+
                     foreach ($files as $file) {
                         $file_image = 'File-' . uniqid() . '-' . $file->getClientOriginalName();
                         $filefilePath = public_path('/assets/property_images');
-    
+
                         if (!File::isDirectory($filefilePath)) {
                             File::makeDirectory($filefilePath, 0777, true, true);
                         }
-    
+
                         $fileimg = Image::make($file->getRealPath());
                         $fileimg->save($filefilePath . '/' . $file_image);
                         $file_names[] = $file_image;
                     }
-    
+
                     $comma_separated_names = implode(',', $file_names);
                 } else {
                     return response()->json([
-                        'status'=>false,
-                        'messages' => 'Property Image Required', 
+                        'status' => false,
+                        'messages' => 'Property Image Required',
                         'data' => []
                     ], 202);
                     // return response()->json(['message' => 'Property Image Required'], 400);
                 }
-    
+
                 $user = User::create([
                     'fullname' => $request->fullname,
                     'email' => $request->email,
@@ -207,14 +207,14 @@ class ApiController extends Controller
                     'postal_code' => $request->postal_code,
                     'verification_token' => Str::random(64)
                 ]);
-    
+
                 Landlord::create([
                     'user_id' => $user->id,
                     'no_of_property' => $request->no_of_property,
                     'availability_start_time' => $request->availability_start_time,
                     'availability_end_time' => $request->availability_end_time
                 ]);
-    
+
                 Property::create([
                     'user_id' => $user->id,
                     'type' => $request->type,
@@ -234,8 +234,8 @@ class ApiController extends Controller
                 ]);
             } else {
                 return response()->json([
-                    'status'=>false,
-                    'messages' => 'Fill Required Fields', 
+                    'status' => false,
+                    'messages' => 'Fill Required Fields',
                     'data' => []
                 ], 202);
                 // return response()->json(['message' => 'Required'], 400);
@@ -258,7 +258,7 @@ class ApiController extends Controller
                         'postal_code' => $request->postal_code,
                         'verification_token' => Str::random(64)
                     ]);
-    
+
                     Tenant::create([
                         'user_id' => $user->id,
                         'last_status' => $request->last_status,
@@ -271,8 +271,8 @@ class ApiController extends Controller
                     ]);
                 } else {
                     return response()->json([
-                        'status'=>false,
-                        'messages' => 'Fill Required Fields', 
+                        'status' => false,
+                        'messages' => 'Fill Required Fields',
                         'data' => []
                     ], 202);
                 }
@@ -290,7 +290,7 @@ class ApiController extends Controller
                         'device_token' => $request->device_token,
                         'verification_token' => Str::random(64)
                     ]);
-    
+
                     Tenant::create([
                         'user_id' => $user->id,
                         'last_status' => $request->last_status,
@@ -300,8 +300,8 @@ class ApiController extends Controller
                     ]);
                 } else {
                     return response()->json([
-                        'status'=>false,
-                        'messages' => 'Fill Required Fields', 
+                        'status' => false,
+                        'messages' => 'Fill Required Fields',
                         'data' => []
                     ], 202);
                 }
@@ -349,7 +349,7 @@ class ApiController extends Controller
                         $cnic_backfileimg->save($cnic_backfilefilePath . '/' . $cnic_backfileimage);
                         $cnic_back_file_name = $cnic_backfileimage;
 
-    
+
                         $user = User::create([
                             'fullname' => $request->fullname,
                             'email' => $request->email,
@@ -364,7 +364,7 @@ class ApiController extends Controller
                             'postal_code' => $request->postal_code,
                             'verification_token' => Str::random(64)
                         ]);
-    
+
                         ServiceProvider::create([
                             'user_id' => $user->id,
                             'services' => $request->services,
@@ -378,8 +378,8 @@ class ApiController extends Controller
                         ]);
                     } else {
                         return response()->json([
-                            'status'=>false,
-                            'messages' => 'Certification File & CNIC is Required', 
+                            'status' => false,
+                            'messages' => 'Certification File & CNIC is Required',
                             'data' => []
                         ], 202);
                         // return response()->json(['message' => 'Certification & CNIC is Required'], 400);
@@ -390,28 +390,28 @@ class ApiController extends Controller
                         $cnic_frontfile = $request->file('cnic_front');
                         $cnic_frontfileimage = 'File-' . uniqid() . '-' . $cnic_frontfile->getClientOriginalName();
                         $cnic_frontfilefilePath = public_path('/assets/cnic');
-    
+
                         if (!File::isDirectory($cnic_frontfilefilePath)) {
                             File::makeDirectory($cnic_frontfilefilePath, 0777, true, true);
                         }
-    
+
                         $cnic_frontfileimg = Image::make($cnic_frontfile->getRealPath());
                         $cnic_frontfileimg->save($cnic_frontfilefilePath . '/' . $cnic_frontfileimage);
                         $cnic_front_file_name = $cnic_frontfileimage;
-    
+
                         // Cnic Back
                         $cnic_backfile = $request->file('cnic_back');
                         $cnic_backfileimage = 'File-' . uniqid() . '-' . $cnic_backfile->getClientOriginalName();
                         $cnic_backfilefilePath = public_path('/assets/cnic');
-    
+
                         if (!File::isDirectory($cnic_backfilefilePath)) {
                             File::makeDirectory($cnic_backfilefilePath, 0777, true, true);
                         }
-    
+
                         $cnic_backfileimg = Image::make($cnic_backfile->getRealPath());
                         $cnic_backfileimg->save($cnic_backfilefilePath . '/' . $cnic_backfileimage);
                         $cnic_back_file_name = $cnic_backfileimage;
-    
+
                         $user = User::create([
                             'fullname' => $request->fullname,
                             'email' => $request->email,
@@ -424,7 +424,7 @@ class ApiController extends Controller
                             'device_token' => $request->device_token,
                             'verification_token' => Str::random(64)
                         ]);
-    
+
                         ServiceProvider::create([
                             'user_id' => $user->id,
                             'services' => $request->services,
@@ -437,8 +437,8 @@ class ApiController extends Controller
                         ]);
                     } else {
                         return response()->json([
-                            'status'=>false,
-                            'messages' => 'CNIC is Required', 
+                            'status' => false,
+                            'messages' => 'CNIC is Required',
                             'data' => []
                         ], 202);
                         // return response()->json(['message' => 'CNIC Required'], 400);
@@ -446,8 +446,8 @@ class ApiController extends Controller
                 }
             } else {
                 return response()->json([
-                    'status'=>false,
-                    'messages' => 'Fill Required Fields', 
+                    'status' => false,
+                    'messages' => 'Fill Required Fields',
                     'data' => []
                 ], 202);
             }
@@ -466,58 +466,55 @@ class ApiController extends Controller
                 'postal_code' => $request->postal_code,
                 'verification_token' => Str::random(64)
             ]);
-           
+
 
             Visitor::create([
                 'user_id' => $user->id,
             ]);
-           
+
         }
         $this->sendVerificationEmail($user);
         return response()->json([
             'status' => true,
             'messages' => 'Registered Successfully , Please check your Email to Verify'
-            
+
         ], 200);
     }
     protected function sendVerificationEmail($user)
-{
-    $verificationLink = url('verify-email/' . $user->verification_token);
+    {
+        $verificationLink = url('verify-email/' . $user->verification_token);
 
-    Mail::send('emails.verifyEmail', ['link' => $verificationLink, 'user'=>$user], function ($message) use ($user) {
-        $message->to($user->email);
-        $message->subject('Verify your email');
-    });
-}
+        Mail::send('emails.verifyEmail', ['link' => $verificationLink, 'user' => $user], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Verify your email');
+        });
+    }
     public function verifyEmail($token)
     {
-       
+
         $user = User::where('verification_token', $token)->first();
 
-       
+
         if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Invalid verification token.'
-            ], 404);
+            return view('emails.email_verification_failure', [
+                'message' => 'Invalid verification link.'
+            ]);
         }
 
         if ($user->_is_verified) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Email already verified.'
-            ], 200);
+            return view('emails.email_verification_success', [
+                'message' => 'Your email is already verified.'
+            ]);
         }
 
-        
+
         $user->is_verified = 1;
-        $user->verification_token = null; 
+        $user->verification_token = null;
         $user->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Email verified successfully.'
-        ], 200);
+        return view('emails.email_verification_success', [
+            'message' => 'Your email has been verified successfully!'
+        ]);
     }
     public function updateProfile(Request $request)
     {
@@ -528,10 +525,10 @@ class ApiController extends Controller
             'phone_number' => 'required',
         ]);
 
-        if ($validator->fails()) {  
+        if ($validator->fails()) {
             return response()->json([
-                'status'=>false,
-                'messages' => $validator->messages()->toArray(), 
+                'status' => false,
+                'messages' => $validator->messages()->toArray(),
                 'error' => 'invalid_fields_data'
             ], 202);
         }
@@ -544,11 +541,11 @@ class ApiController extends Controller
             $profileimage = $request->file('profileimage');
             $image = 'Profile-' . uniqid() . '-' . $profileimage->getClientOriginalName();
             $filePath = public_path('/assets/profile_images');
-    
+
             if (!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 0777, true, true);
             }
-    
+
             $img = Image::make($profileimage->getRealPath());
             $img->save($filePath . '/' . $image);
             $image_name = $image;
@@ -563,16 +560,16 @@ class ApiController extends Controller
         User::whereid($user->id)->update($update_data);
 
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'messages' => 'Profile Updated Successfully...'
         ], 200);
-       
+
     }
-    
+
     public function updatePassword(Request $request)
     {
         $user = Auth::user();
-       // Validate the request data, including the password confirmation
+        // Validate the request data, including the password confirmation
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
             'password' => [
@@ -585,11 +582,11 @@ class ApiController extends Controller
                 },
             ],
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
-                'status'=>false,
-                'messages' => $validator->messages()->toArray(), 
+                'status' => false,
+                'messages' => $validator->messages()->toArray(),
                 'error' => 'invalid_fields_data'
             ], 202);
         }
@@ -609,66 +606,66 @@ class ApiController extends Controller
         User::whereid($user->id)->update($update_data);
 
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'messages' => 'Password Updated Successfully...'
         ], 200);
-       
+
     }
 
     public function userLogin(Request $request)
-    { 
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required',
             // 'device_token' => 'required',
             // 'platform' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             // return response()->json(['error' => 'Unauthenticated'], 401);
-            return response()->json([ 
-                'status'=>false,
-                'messages' => 'Unauthenticated', 
+            return response()->json([
+                'status' => false,
+                'messages' => 'Unauthenticated',
                 'error' => 'invalid_fields_data or token is invalid'
             ], 202);
         }
 
         $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials) ) {
+        if (Auth::attempt($credentials)) {
             if (Auth::check()) {
-               
+
                 $user = Auth::user();
                 if ($user->is_verified == 0) {
-                  
+
                     return response()->json([
                         'error' => 'Your email address is not verified. Please verify your email to log in.'
-                    ], 403); 
+                    ], 403);
                 }
                 $token = $user->createToken('authToken')->plainTextToken;
                 // echo $user->role_id;
                 // exit;
-                if($user->role_id  != '5'){
+                if ($user->role_id != '5') {
                     if ($request->has('device_token')) {
-                        $user->update(['device_token' => $request->device_token,'platform' => $request->platform]);
-                    }else{
+                        $user->update(['device_token' => $request->device_token, 'platform' => $request->platform]);
+                    } else {
                         return response()->json([
                             'status' => false,
                             'messages' => 'Device Token & Platform is Required '
                         ], 202);
                     }
                 }
-                
-                $expiryDate = Carbon::now()->subDays(15); 
+
+                $expiryDate = Carbon::now()->subDays(15);
                 Contract::where('status', 0)
                     ->where('created_at', '<', $expiryDate)
                     ->update(['status' => 3]);
-                    $option =[
-                        'title' => 'Login',
-                        'body' => $user->name. 'Sign In With this device',
-                        'created_by' => Auth::id(),
-                        'created_to' => $user->id,
-                    ];
-                    $this->sendNotification($option);
+                $option = [
+                    'title' => 'Login',
+                    'body' => $user->name . 'Sign In With this device',
+                    'created_by' => Auth::id(),
+                    'created_to' => $user->id,
+                ];
+                $this->sendNotification($option);
                 return response()->json([
                     'status' => true,
                     'messages' => 'Login Successfully',
@@ -676,13 +673,13 @@ class ApiController extends Controller
                     // 'notification' => $notification,
                     'token' => $token
                 ], 200);
-            }else{
+            } else {
                 return response()->json([
                     'status' => false,
                     'messages' => 'Invalid Crediational'
                 ], 202);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => false,
                 'messages' => 'Invalid Crediational'
@@ -701,7 +698,8 @@ class ApiController extends Controller
         // return response()->json(['message' => 'Successfully logged out'], 200);
     }
 
-    public function getProperties(Request $request){
+    public function getProperties(Request $request)
+    {
 
         if (!$request->has('user_id')) {
             return response()->json([
@@ -710,7 +708,7 @@ class ApiController extends Controller
             ], 202);
             // return response()->json(['message' => 'UserId Required'], 400);
         }
-        
+
         $userId = Auth::id();
         $properties = Property::with(['user'])->whereuser_id($request->user_id)->orderByDesc('created_at')->paginate(20);
         if ($properties->isEmpty()) {
@@ -720,23 +718,23 @@ class ApiController extends Controller
             ], 200);
             // return response()->json(['message' => 'Properties not found'], 404);
         }
-        foreach ($properties as $s){
+        foreach ($properties as $s) {
             $favoriteproperties = FavouriteProperty::where('user_id', $request->user_id)->where('property_id', $s->id)->where('fav_flag', 1)->first();
 
-            if($favoriteproperties){
+            if ($favoriteproperties) {
                 $s->is_favorite = true;
-            }else{
+            } else {
                 $s->is_favorite = false;
             }
         }
-         
+
 
         return response()->json([
-            'status'=>true,
-            'message'=>'Properties Found',
+            'status' => true,
+            'message' => 'Properties Found',
             'data' => $properties
         ], 200);
-    } 
+    }
 
     public function addProperty(Request $request)
     {
@@ -746,25 +744,25 @@ class ApiController extends Controller
                 'messages' => 'User Id Required'
             ], 202);
         }
-    
-        if($request->type && $request->city && $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom){
+
+        if ($request->type && $request->city && $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom) {
 
             $bill_image_name = '';
             $comma_separated_names = '';
-            if($request->file('electricity_bill')){
+            if ($request->file('electricity_bill')) {
                 $electricity_bill = $request->file('electricity_bill');
-                $billimage = 'ElectricityBill-' . uniqid() . '-' .$electricity_bill->getClientOriginalName();
+                $billimage = 'ElectricityBill-' . uniqid() . '-' . $electricity_bill->getClientOriginalName();
                 $filePath = public_path('/assets/electricity_bill');
-                if(!File::isDirectory($filePath)){
+                if (!File::isDirectory($filePath)) {
                     File::makeDirectory($filePath, 0777, true, true);
                 }
                 $billimg = Image::make($electricity_bill->getRealPath());
-                $billimg->save($filePath.'/'.$billimage);
+                $billimg->save($filePath . '/' . $billimage);
                 $bill_image_name = $billimage;
-            }else{
+            } else {
                 return response()->json([
-                    'status'=>false,
-                    'messages' => 'Electricity Bill Required', 
+                    'status' => false,
+                    'messages' => 'Electricity Bill Required',
                     'data' => []
                 ], 202);
             }
@@ -782,10 +780,10 @@ class ApiController extends Controller
                     $file_names[] = $file_image;
                 }
                 $comma_separated_names = implode(',', $file_names);
-            }else{
+            } else {
                 return response()->json([
-                    'status'=>false,
-                    'messages' => 'Property Image Required', 
+                    'status' => false,
+                    'messages' => 'Property Image Required',
                     'data' => []
                 ], 202);
             }
@@ -808,20 +806,20 @@ class ApiController extends Controller
                 'property_sub_type' => $request->property_sub_type,
             ]);
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'messages' => 'Property Added Successfully...'
             ], 200);
             // return response()->json(['message' => 'Property Added Successfully...'], 200);
-        }else{
+        } else {
             return response()->json([
-                'status'=>false,
-                'messages' => 'Fill Required Fields', 
+                'status' => false,
+                'messages' => 'Fill Required Fields',
                 'data' => []
             ], 202);
             // return response()->json([ 'message' => 'Fill Required Fields'], 400);
         }
     }
-    
+
     public function updateProperty(Request $request, $id)
     {
         if (!$request->has('user_id')) {
@@ -829,7 +827,7 @@ class ApiController extends Controller
                 'status' => false,
                 'messages' => 'User Id Required'
             ], 202);
-            
+
         }
 
         $property = Property::find($id);
@@ -839,7 +837,7 @@ class ApiController extends Controller
                 'status' => false,
                 'messages' => 'Property not found'
             ], 202);
-            
+
             // return response()->json(['message' => 'Property not found'], 404);
         }
 
@@ -868,8 +866,8 @@ class ApiController extends Controller
                 $bill_image_name = $billimage;
             } else {
                 return response()->json([
-                    'status'=>false,
-                    'messages' => 'Electricity Bill Required', 
+                    'status' => false,
+                    'messages' => 'Electricity Bill Required',
                     'data' => []
                 ], 202);
                 // return response()->json(['message' => 'Electricity Bill Required'], 400);
@@ -901,8 +899,8 @@ class ApiController extends Controller
                 $comma_separated_names = implode(',', $file_names);
             } else {
                 return response()->json([
-                    'status'=>false,
-                    'messages' => 'Property Images Required', 
+                    'status' => false,
+                    'messages' => 'Property Images Required',
                     'data' => []
                 ], 202);
             }
@@ -926,13 +924,13 @@ class ApiController extends Controller
                 'property_sub_type' => $request->property_sub_type,
             ]);
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'messages' => 'Property Updated Successfully...'
             ], 200);
         } else {
             return response()->json([
-                'status'=>false,
-                'messages' => 'Fill Required Fields', 
+                'status' => false,
+                'messages' => 'Fill Required Fields',
                 'data' => []
             ], 202);
             // return response()->json(['message' => 'Fill Required Fields'], 400);
@@ -951,8 +949,8 @@ class ApiController extends Controller
             ], 202);
         }
         return response()->json([
-            'status'=>true,
-            'message'=>'Property Found',
+            'status' => true,
+            'message' => 'Property Found',
             'data' => $property
         ], 200);
     }
@@ -962,14 +960,14 @@ class ApiController extends Controller
         $property = Property::with(['user'])->find($id);
         if (!$property) {
             return response()->json([
-                'status'=>false,
+                'status' => false,
                 'message' => 'Properties not found',
                 'data' => []
             ], 200);
         }
         return response()->json([
-            'status'=>true,
-            'message'=>'Property Found',
+            'status' => true,
+            'message' => 'Property Found',
             'data' => $property
         ], 200);
         // $billbaseUrl = public_path('/assets/electricity_bill/');
@@ -987,7 +985,7 @@ class ApiController extends Controller
 
         // return response()->json($responseData, 200);
     }
-    
+
     public function allProperties(Request $request)
     {
         $searchQuery = $request->query('search');
@@ -1014,17 +1012,17 @@ class ApiController extends Controller
             $propertiesQuery->where('amount', '>=', $maxAmount);
         }
 
-        if ($bedroom) { 
-            $propertiesQuery->where('bedroom', $bedroom); 
+        if ($bedroom) {
+            $propertiesQuery->where('bedroom', $bedroom);
         }
-        if ($bathroom) { 
-            $propertiesQuery->where('bathroom', $bathroom); 
+        if ($bathroom) {
+            $propertiesQuery->where('bathroom', $bathroom);
         }
-        if ($description) { 
-            $propertiesQuery->where('description', 'like', '%' . $description . '%'); 
+        if ($description) {
+            $propertiesQuery->where('description', 'like', '%' . $description . '%');
         }
-        if ($areaRange) { 
-            $propertiesQuery->where('area_range', 'like', '%' . $areaRange . '%'); 
+        if ($areaRange) {
+            $propertiesQuery->where('area_range', 'like', '%' . $areaRange . '%');
         }
 
         if ($type) {
@@ -1041,7 +1039,7 @@ class ApiController extends Controller
         $properties = $propertiesQuery->paginate(20);
         if ($properties->isEmpty()) {
             return response()->json([
-                'status'=>false,
+                'status' => false,
                 'message' => 'Properties not found',
                 'data' => []
             ], 404);
@@ -1050,9 +1048,11 @@ class ApiController extends Controller
         if (Auth::guard('api')->check()) {
             $userId = Auth::guard('api')->user()->id;
 
-            $properties->load(['favoritedByUsers' => function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            }]);
+            $properties->load([
+                'favoritedByUsers' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ]);
 
             $properties->each(function ($property) use ($userId) {
                 $property->is_favorite = $property->favoritedByUsers->isNotEmpty();
@@ -1063,31 +1063,33 @@ class ApiController extends Controller
                 $property->is_favorite = false;
             });
         }
-         
+
         return response()->json([
-            'status'=>true,
-            'message'=>'Property Found',
-            'data' =>$properties
+            'status' => true,
+            'message' => 'Property Found',
+            'data' => $properties
         ], 200);
-    } 
+    }
 
     public function storeService(Request $request)
     {
         try {
-            $validation = Validator::make($request->all(),
-            [
-                'user_id' => 'required',
-                'service_name' => 'required',
-                'pricing' => 'required',
-                'lat' => 'required',
-                'long' => 'required',
-                'location' => 'required',
-                'start_time' => 'required',
-                'end_time' => 'required',
-                'country' => 'required',
-                'city' => 'required',
-                'media' => 'required',
-            ]);
+            $validation = Validator::make(
+                $request->all(),
+                [
+                    'user_id' => 'required',
+                    'service_name' => 'required',
+                    'pricing' => 'required',
+                    'lat' => 'required',
+                    'long' => 'required',
+                    'location' => 'required',
+                    'start_time' => 'required',
+                    'end_time' => 'required',
+                    'country' => 'required',
+                    'city' => 'required',
+                    'media' => 'required',
+                ]
+            );
             if ($validation->fails()) {
                 return response()->json([
                     'status' => true,
@@ -1111,7 +1113,7 @@ class ApiController extends Controller
                     }
                     $comma_separated_names = implode(',', $file_names);
                 }
-    
+
                 Service::create([
                     'user_id' => $request->user_id,
                     'service_name' => $request->service_name,
@@ -1126,11 +1128,11 @@ class ApiController extends Controller
                     'country' => $request->country,
                     'city' => $request->city,
                     'additional_information' => $request->additional_information
-                    
+
                 ]);
-    
+
                 return response()->json([
-                    'status'=>true,
+                    'status' => true,
                     'messages' => 'Service Added Successfully...'
                 ], 200);
             }
@@ -1143,47 +1145,47 @@ class ApiController extends Controller
         //         'messages' => 'User Id Required'
         //     ], 202);
         // }
-    
+
         // if($request->service_name && $request->pricing && $request->lat && $request->long && $request->location && $request->start_time && $request->end_time && $request->country && $request->city){
 
-            // $comma_separated_names = '';
-            // if ($request->hasFile('media')) {
-            //     $files = $request->file('media');
-            //     $file_names = [];
-            //     foreach ($files as $file) {
-            //         $file_image = 'Media-' . uniqid() . '-' . $file->getClientOriginalName();
-            //         $filefilePath = public_path('/assets/media_images');
-            //         if (!File::isDirectory($filefilePath)) {
-            //             File::makeDirectory($filefilePath, 0777, true, true);
-            //         }
-            //         $fileimg = Image::make($file->getRealPath());
-            //         $fileimg->save($filefilePath . '/' . $file_image);
-            //         $file_names[] = $file_image;
-            //     }
-            //     $comma_separated_names = implode(',', $file_names);
-            // }
+        // $comma_separated_names = '';
+        // if ($request->hasFile('media')) {
+        //     $files = $request->file('media');
+        //     $file_names = [];
+        //     foreach ($files as $file) {
+        //         $file_image = 'Media-' . uniqid() . '-' . $file->getClientOriginalName();
+        //         $filefilePath = public_path('/assets/media_images');
+        //         if (!File::isDirectory($filefilePath)) {
+        //             File::makeDirectory($filefilePath, 0777, true, true);
+        //         }
+        //         $fileimg = Image::make($file->getRealPath());
+        //         $fileimg->save($filefilePath . '/' . $file_image);
+        //         $file_names[] = $file_image;
+        //     }
+        //     $comma_separated_names = implode(',', $file_names);
+        // }
 
-            // Service::create([
-            //     'user_id' => $request->user_id,
-            //     'service_name' => $request->service_name,
-            //     'description' => $request->description,
-            //     // 'category_id' => $request->category_id,
-            //     'pricing' => $request->pricing,
-            //     'start_time' => $request->start_time,
-            //     'end_time' => $request->end_time,
-            //     'location' => $request->location,
-            //     'lat' => $request->lat,
-            //     'long' => $request->long,
-            //     'media' => $comma_separated_names,
-            //     'additional_information' => $request->additional_information
-            //     'country' => $request->country
-            //     'city' => $request->city
-            // ]);
+        // Service::create([
+        //     'user_id' => $request->user_id,
+        //     'service_name' => $request->service_name,
+        //     'description' => $request->description,
+        //     // 'category_id' => $request->category_id,
+        //     'pricing' => $request->pricing,
+        //     'start_time' => $request->start_time,
+        //     'end_time' => $request->end_time,
+        //     'location' => $request->location,
+        //     'lat' => $request->lat,
+        //     'long' => $request->long,
+        //     'media' => $comma_separated_names,
+        //     'additional_information' => $request->additional_information
+        //     'country' => $request->country
+        //     'city' => $request->city
+        // ]);
 
-            // return response()->json([
-            //     'status'=>true,
-            //     'messages' => 'Service Added Successfully...'
-            // ], 200);
+        // return response()->json([
+        //     'status'=>true,
+        //     'messages' => 'Service Added Successfully...'
+        // ], 200);
         // }else{
         //     return response()->json([
         //         'status'=>false,
@@ -1192,7 +1194,7 @@ class ApiController extends Controller
         //     ], 202);
         // }
     }
-     
+
     public function updateServices(Request $request, $id)
     {
         if (!$request->has('user_id')) {
@@ -1200,7 +1202,7 @@ class ApiController extends Controller
                 'status' => false,
                 'messages' => 'User Id Required'
             ], 202);
-            
+
         }
 
         $service = Service::find($id);
@@ -1210,11 +1212,11 @@ class ApiController extends Controller
                 'status' => false,
                 'messages' => 'Service not found'
             ], 202);
-            
+
             // return response()->json(['message' => 'Property not found'], 404);
         }
 
-        if($request->service_name && $request->pricing  && $request->lat && $request->long && $request->location && $request->start_time && $request->end_time){
+        if ($request->service_name && $request->pricing && $request->lat && $request->long && $request->location && $request->start_time && $request->end_time) {
             $comma_separated_names = '';
 
 
@@ -1262,13 +1264,13 @@ class ApiController extends Controller
                 'additional_information' => $request->additional_information
             ]);
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'messages' => 'Service Updated Successfully...'
             ], 200);
         } else {
             return response()->json([
-                'status'=>false,
-                'messages' => 'Fill Required Fields', 
+                'status' => false,
+                'messages' => 'Fill Required Fields',
                 'data' => []
             ], 202);
         }
@@ -1279,21 +1281,21 @@ class ApiController extends Controller
         $service = Service::find($id);
         if (!$service) {
             return response()->json([
-                'status'=>false,
-                'messages' => 'Service not found', 
+                'status' => false,
+                'messages' => 'Service not found',
                 'data' => []
             ], 202);
         }
         $service->delete();
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'messages' => 'Service deleted successfully'
         ], 200);
     }
-    
+
     public function getServices(Request $request)
     {
-        
+
         // $userId = $request->input('user_id');
 
         // if (!$userId) {
@@ -1331,7 +1333,7 @@ class ApiController extends Controller
         if ($city) {
             $serviceQuery->where('city', $city);
         }
-  
+
         $services = $serviceQuery->orderByDesc('created_at')->paginate(20);
 
         // $services = Service::with('user','provider')->where('user_id', $userId)->orderByDesc('created_at')->paginate(20);
@@ -1342,26 +1344,26 @@ class ApiController extends Controller
                 'message' => 'Service not found'
             ], 404);
         }
-        
-        foreach ($services as $s){
+
+        foreach ($services as $s) {
             $favoriteService = FavouriteService::where('user_id', $userId)->where('service_id', $s->id)->where('fav_flag', 1)->first();
 
             $provider_services = Service::whereuser_id($s->user_id)->pluck('id');
-            $review = ServiceReview::whereIn('service_id',$provider_services)->get();
+            $review = ServiceReview::whereIn('service_id', $provider_services)->get();
             $count = count($review);
             $total_rate = 0;
             foreach ($review as $r) {
                 $total_rate += $r->rate;
             }
-            
+
             $average_rate = $count > 0 ? $total_rate / $count : 0;
             $s->count_of_service = $count;
             $s->total_rate = $total_rate;
             $s->average_rate = $average_rate;
 
-            if($favoriteService){
+            if ($favoriteService) {
                 $s->is_favorite = true;
-            }else{
+            } else {
                 $s->is_favorite = false;
             }
         }
@@ -1371,33 +1373,33 @@ class ApiController extends Controller
             'message' => 'Services Found',
             'data' => $services
         ], 200);
-    } 
+    }
 
     public function allServices()
     {
         $userId = Auth::id();
-        
-        $services = Service::with('user','provider')->orderByDesc('created_at')->paginate(20);
-        
-        foreach ($services as $s){
+
+        $services = Service::with('user', 'provider')->orderByDesc('created_at')->paginate(20);
+
+        foreach ($services as $s) {
             $favoriteService = FavouriteService::where('user_id', $userId)->where('service_id', $s->id)->where('fav_flag', 1)->first();
 
             $provider_services = Service::whereuser_id($s->user_id)->pluck('id');
-            $review = ServiceReview::whereIn('service_id',$provider_services)->get();
+            $review = ServiceReview::whereIn('service_id', $provider_services)->get();
             $count = count($review);
             $total_rate = 0;
             foreach ($review as $r) {
                 $total_rate += $r->rate;
             }
-            
+
             $average_rate = $count > 0 ? $total_rate / $count : 0;
             $s->count_of_service = $count;
             $s->total_rate = $total_rate;
             $s->average_rate = $average_rate;
 
-            if($favoriteService){
+            if ($favoriteService) {
                 $s->is_favorite = true;
-            }else{
+            } else {
                 $s->is_favorite = false;
             }
         }
@@ -1413,12 +1415,12 @@ class ApiController extends Controller
             'message' => 'Services Found',
             'data' => $services
         ], 200);
-    } 
+    }
 
     public function getService($id)
     {
         $userId = Auth::id();
-        $service = Service::with('user','provider')->find($id);
+        $service = Service::with('user', 'provider')->find($id);
         if (!$service) {
             return response()->json([
                 'status' => false,
@@ -1427,33 +1429,34 @@ class ApiController extends Controller
         }
         $favoriteService = FavouriteService::where('user_id', $userId)->where('service_id', $service->id)->where('fav_flag', 1)->first();
         $provider_services = Service::whereuser_id($service->user_id)->pluck('id');
-        $review = ServiceReview::whereIn('service_id',$provider_services)->get();
+        $review = ServiceReview::whereIn('service_id', $provider_services)->get();
         $count = count($review);
         $total_rate = 0;
         foreach ($review as $r) {
             $total_rate += $r->rate;
         }
-        
+
         $average_rate = $count > 0 ? $total_rate / $count : 0;
         $service->count_of_service = $count;
         $service->total_rate = $total_rate;
         $service->average_rate = $average_rate;
 
-        if($favoriteService){
+        if ($favoriteService) {
             $service->is_favorite = true;
-        }else{
+        } else {
             $service->is_favorite = false;
         }
-       
+
         return response()->json([
-            'status'=>true,
-            'message'=>'Service Found',
+            'status' => true,
+            'message' => 'Service Found',
             'data' => $service
         ], 200);
     }
 
     // 15 Feb 2024 
-    public function addFavouriteProvider(Request $request){
+    public function addFavouriteProvider(Request $request)
+    {
         $userId = $request->input('user_id');
         $providerId = $request->input('provider_id');
         $fav = $request->input('fav_flag');
@@ -1476,16 +1479,16 @@ class ApiController extends Controller
                 'message' => 'Filled Required Fields'
             ], 400);
         }
-        if($fav == 1){
+        if ($fav == 1) {
             $fav_provider = FavouriteProvider::where('user_id', $userId)
-                                  ->where('provider_id', $providerId)
-                                  ->first();
-            if ($fav_provider){
+                ->where('provider_id', $providerId)
+                ->first();
+            if ($fav_provider) {
                 return response()->json([
                     'status' => true,
                     'message' => 'Already Favorited'
                 ], 200);
-            }else{
+            } else {
 
                 FavouriteProvider::create([
                     'user_id' => $userId,
@@ -1493,15 +1496,15 @@ class ApiController extends Controller
                     'fav_flag' => $fav
                 ]);
                 return response()->json([
-                    'status'=>true,
+                    'status' => true,
                     'messages' => 'Favourite added successfully.'
                 ], 200);
             }
-        }else if($fav == 2){
+        } else if ($fav == 2) {
             $fav_provider = FavouriteProvider::where('user_id', $userId)
-                                  ->where('provider_id', $providerId)
-                                  ->first();
-            if ($fav_provider){
+                ->where('provider_id', $providerId)
+                ->first();
+            if ($fav_provider) {
 
                 $fav_provider->update([
                     'user_id' => $userId,
@@ -1509,11 +1512,11 @@ class ApiController extends Controller
                     'fav_flag' => $fav
                 ]);
                 return response()->json([
-                    'status'=>true,
+                    'status' => true,
                     'messages' => 'Favourite updated successfully.'
                 ], 200);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => true,
                 'message' => 'Favourite flag incorrect'
@@ -1521,8 +1524,9 @@ class ApiController extends Controller
         }
 
     }
-    
-    public function addFavouriteProperty(Request $request){
+
+    public function addFavouriteProperty(Request $request)
+    {
         $userId = $request->input('user_id');
         $propertyId = $request->input('property_id');
         $fav = $request->input('fav_flag');
@@ -1545,39 +1549,39 @@ class ApiController extends Controller
                 'message' => 'Filled Required Fields'
             ], 400);
         }
-        if($fav == 1){
+        if ($fav == 1) {
             FavouriteProperty::where('user_id', $userId)
-                                  ->where('property_id', $propertyId)
-                                  ->delete();
-            
+                ->where('property_id', $propertyId)
+                ->delete();
+
             FavouriteProperty::create([
                 'user_id' => $userId,
                 'property_id' => $propertyId,
                 'fav_flag' => $fav
             ]);
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'messages' => 'Successfully created'
             ], 200);
-        
 
-        }else if($fav == 2){
+
+        } else if ($fav == 2) {
             $fav_property = FavouriteProperty::where('user_id', $userId)
-                                  ->where('property_id', $propertyId)
-                                  ->first();
-            if ($fav_property){
-            
+                ->where('property_id', $propertyId)
+                ->first();
+            if ($fav_property) {
+
                 $fav_property->update([
                     'user_id' => $userId,
                     'property_id' => $propertyId,
                     'fav_flag' => $fav
                 ]);
                 return response()->json([
-                    'status'=>true,
+                    'status' => true,
                     'messages' => 'Favourite updated successfully.'
                 ], 200);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'Favourite flag incorrect'
@@ -1585,7 +1589,8 @@ class ApiController extends Controller
         }
     }
 
-    public function getFavourite(Request $request){
+    public function getFavourite(Request $request)
+    {
         $userId = $request->input('user_id');
 
         if (!$userId) {
@@ -1609,12 +1614,12 @@ class ApiController extends Controller
 
         // Retrieve favorite properties with their related data
         $favoriteProperties = FavouriteProperty::with('property')
-                                                ->where('user_id', $userId)
-                                                ->where('fav_flag', 1)
-                                                ->orderByDesc('created_at')
-                                                ->paginate(20);
+            ->where('user_id', $userId)
+            ->where('fav_flag', 1)
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
-                                            
+
         if ($favoriteService->isEmpty() && $favoriteProperties->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -1632,25 +1637,27 @@ class ApiController extends Controller
 
     }
 
-    public function getServiceProviders(Request $request){
+    public function getServiceProviders(Request $request)
+    {
 
         $serviceproviders = ServiceProvider::with('user')->paginate(20);
         if ($serviceproviders->isEmpty()) {
             return response()->json([
-                'status'=>false,
+                'status' => false,
                 'message' => 'Service Providers not found',
                 'data' => []
             ], 404);
         }
-         
+
         return response()->json([
-            'status'=>true,
-            'message'=>'Service Providers Found',
+            'status' => true,
+            'message' => 'Service Providers Found',
             'data' => $serviceproviders
         ], 200);
     }
 
-    public function getServiceProvider($id){
+    public function getServiceProvider($id)
+    {
         $serviceprovider = ServiceProvider::with('user')->find($id);
 
         if (!$serviceprovider) {
@@ -1660,60 +1667,62 @@ class ApiController extends Controller
             ], 202);
         }
         return response()->json([
-            'status'=>true,
-            'message'=>'Service Provider Found',
+            'status' => true,
+            'message' => 'Service Provider Found',
             'data' => $serviceprovider
         ], 200);
 
     }
     public function getUserByName(Request $request)
-{
-    // Validate the request to ensure 'username_or_email' is provided
-    $request->validate([
-        'username_or_email' => 'required|string'
-    ]);
+    {
+        // Validate the request to ensure 'username_or_email' is provided
+        $request->validate([
+            'username_or_email' => 'required|string'
+        ]);
 
-    $searchTerm = $request->input('username_or_email');
+        $searchTerm = $request->input('username_or_email');
 
-    // Find users where username or email contains the search term
-    $users = User::where('username', 'like', "%{$searchTerm}%")
-                ->orWhere('email', 'like', "%{$searchTerm}%")
-                ->get(); // Use get() to return all matching results
+        // Find users where username or email contains the search term
+        $users = User::where('username', 'like', "%{$searchTerm}%")
+            ->orWhere('email', 'like', "%{$searchTerm}%")
+            ->get(); // Use get() to return all matching results
 
-    if ($users->isEmpty()) {
+        if ($users->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No users found'
+            ], 404); // Use 404 for "Not Found"
+        }
+
         return response()->json([
-            'status' => false,
-            'message' => 'No users found'
-        ], 404); // Use 404 for "Not Found"
+            'status' => true,
+            'message' => 'Users Found',
+            'data' => $users
+        ], 200);
     }
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Users Found',
-        'data' => $users
-    ], 200);
-}
-
     //  18 Feb 2024
-    public function getUserById($id){ 
+    public function getUserById($id)
+    {
 
         $user = User::find($id);
 
         if (!$user) {
             return response()->json([
-              'status' => false,
-              'messages' => 'User not found'
+                'status' => false,
+                'messages' => 'User not found'
             ], 202);
         }
         return response()->json([
-          'status'=>true,
-          'message'=>'User Found',
+            'status' => true,
+            'message' => 'User Found',
             'data' => $user
         ], 200);
     }
 
-    public function addServiceRequest(Request $request){
-        
+    public function addServiceRequest(Request $request)
+    {
+
         $userId = $request->input('user_id');
 
         if (!$userId) {
@@ -1721,7 +1730,7 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'User Id Required'
             ], 400);
-        } 
+        }
         $serviceId = $request->input('service_id');
 
         if (!$serviceId) {
@@ -1738,7 +1747,7 @@ class ApiController extends Controller
                 'message' => 'Service Provider Id Required'
             ], 400);
         }
-        
+
         if ($request->address && $request->price && $request->lat && $request->long && $request->property_type && $request->date && $request->time) {
 
             ServiceProviderRequest::create([
@@ -1755,7 +1764,7 @@ class ApiController extends Controller
                 'description' => $request->description,
                 'additional_info' => $request->additional_info,
             ]);
-            $option =[
+            $option = [
                 'title' => 'Service Request',
                 'body' => 'You Receive a Service Request',
                 'created_by' => Auth::id(),
@@ -1767,16 +1776,17 @@ class ApiController extends Controller
                 'status' => true,
                 'message' => 'Successfully created'
             ], 200);
-        }else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'Filled Required Fields'
-            ], 400); 
+            ], 400);
         }
     }
 
-    public function getServiceRequest(Request $request){
-        
+    public function getServiceRequest(Request $request)
+    {
+
         $serviceprovider_id = $request->input('serviceprovider_id');
 
         if (!$serviceprovider_id) {
@@ -1785,18 +1795,19 @@ class ApiController extends Controller
                 'message' => 'Service Provider Id Required'
             ], 400);
         }
-        
-        $requests = ServiceProviderRequest::with(['property_type','user','service'])->whereserviceprovider_id($serviceprovider_id)->orderByDesc('created_at')->paginate(20);
+
+        $requests = ServiceProviderRequest::with(['property_type', 'user', 'service'])->whereserviceprovider_id($serviceprovider_id)->orderByDesc('created_at')->paginate(20);
         return response()->json([
             'status' => true,
             'data' => $requests,
             'message' => 'Successfully created'
         ], 200);
-    
+
     }
-    
-    public function getUserRequest(Request $request){
-        
+
+    public function getUserRequest(Request $request)
+    {
+
         $user_id = $request->input('user_id');
 
         if (!$user_id) {
@@ -1805,34 +1816,36 @@ class ApiController extends Controller
                 'message' => 'User Id Required'
             ], 400);
         }
-        
-        $requests = ServiceProviderRequest::with(['property_type','provider','service'])->whereuser_id($user_id)->whereapproved('0')->orderByDesc('created_at')->paginate(20);
+
+        $requests = ServiceProviderRequest::with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapproved('0')->orderByDesc('created_at')->paginate(20);
 
         return response()->json([
             'status' => true,
             'data' => $requests,
             'message' => 'Successfully created'
         ], 200);
-    
+
     }
 
-    public function getServiceProviderRequest($id){
-        $request = ServiceProviderRequest::with(['property_type','provider','service'])->find($id);
+    public function getServiceProviderRequest($id)
+    {
+        $request = ServiceProviderRequest::with(['property_type', 'provider', 'service'])->find($id);
 
         if (!$request) {
             return response()->json([
-              'status' => false,
-              'messages' => 'Request Not Found.'
+                'status' => false,
+                'messages' => 'Request Not Found.'
             ], 202);
         }
         return response()->json([
-          'status'=>true,
+            'status' => true,
             'data' => $request,
-          'message' => 'Service Request Found.'
+            'message' => 'Service Request Found.'
         ], 200);
     }
 
-    public function addServiceJob(Request $request){
+    public function addServiceJob(Request $request)
+    {
         $userId = $request->input('user_id');
 
         if (!$userId) {
@@ -1849,7 +1862,7 @@ class ApiController extends Controller
                 'message' => 'Service Provider Id Required'
             ], 400);
         }
-        
+
         $request_id = $request->input('request_id');
 
         if (!$request_id) {
@@ -1858,14 +1871,14 @@ class ApiController extends Controller
                 'message' => 'Request Id Required'
             ], 400);
         }
-        
+
         ServiceProviderJob::create([
             'user_id' => $userId,
             'provider_id' => $provider_id,
             'request_id' => $request_id
         ]);
-        
-        $option =[
+
+        $option = [
             'title' => 'Job Started',
             'body' => 'Your Job Started from now against the Booked Service',
             'created_by' => $userId,
@@ -1873,14 +1886,14 @@ class ApiController extends Controller
         ];
         $this->sendNotification($option);
 
-        
+
         $service_request = ServiceProviderRequest::find($request_id);
         $service_request->update([
             'approved' => 1,
             'decline' => 0
         ]);
 
-        $option =[
+        $option = [
             'title' => 'Request Approved',
             'body' => 'You Service Request Approved',
             'created_by' => $service_request->serviceprovider_id,
@@ -1892,11 +1905,12 @@ class ApiController extends Controller
             'status' => true,
             'message' => 'Successfully created'
         ], 200);
-    
+
     }
-    
-    public function getServiceJob(Request $request){
-        
+
+    public function getServiceJob(Request $request)
+    {
+
         $user_id = $request->input('user_id');
 
         if (!$user_id) {
@@ -1904,7 +1918,7 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'User Id Required'
             ], 400);
-        }  
+        }
 
         $provider_id = $request->input('provider_id');
 
@@ -1913,7 +1927,7 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'Service Provider Id Required'
             ], 400);
-        } 
+        }
 
         $request_id = $request->input('request_id');
 
@@ -1923,8 +1937,8 @@ class ApiController extends Controller
                 'message' => 'Request Id Required'
             ], 400);
         }
-        
-        $requests = ServiceProviderJob::with(['request','provider','user'])->whereuser_id($user_id)->orderByDesc('created_at')->get();
+
+        $requests = ServiceProviderJob::with(['request', 'provider', 'user'])->whereuser_id($user_id)->orderByDesc('created_at')->get();
 
         return response()->json([
             'status' => true,
@@ -1935,7 +1949,7 @@ class ApiController extends Controller
 
     public function allPropertyType()
     {
-        
+
         $type = PropertyType::get();
         if ($type->isEmpty()) {
             return response()->json([
@@ -1949,11 +1963,11 @@ class ApiController extends Controller
             'message' => 'Property Types Found',
             'data' => $type
         ], 200);
-    } 
+    }
 
     public function getPropertySubType($id)
     {
-        
+
         $subtype = PropertySubType::wheretype_id($id)->get();
         if ($subtype->isEmpty()) {
             return response()->json([
@@ -1967,10 +1981,11 @@ class ApiController extends Controller
             'message' => 'Property Sub Types Found',
             'data' => $subtype
         ], 200);
-    } 
-        
+    }
+
     // 26-02-2024
-    public function addServiceRequestDecline(Request $request){
+    public function addServiceRequestDecline(Request $request)
+    {
         $request_id = $request->input('request_id');
 
         if (!$request_id) {
@@ -1984,7 +1999,7 @@ class ApiController extends Controller
             'approved' => 0,
             'decline' => 1
         ]);
-        $option =[
+        $option = [
             'title' => 'Request Approved',
             'body' => 'You Service Request Approved',
             'created_by' => $service_request->serviceprovider_id,
@@ -1996,10 +2011,11 @@ class ApiController extends Controller
             'status' => true,
             'message' => 'Successfully created'
         ], 200);
-    
+
     }
-    
-    public function markServiceStatusJob(Request $request){
+
+    public function markServiceStatusJob(Request $request)
+    {
         $job_id = $request->input('job_id');
 
         if (!$job_id) {
@@ -2023,32 +2039,33 @@ class ApiController extends Controller
         ]);
         // $action_name = '';
         $message = '';
-        if($status == 1){
+        if ($status == 1) {
             $title = 'Job Completed';
             $body = 'You Job Completed by Service Provider';
-        }elseif($status == 2){
+        } elseif ($status == 2) {
             $title = 'Job Cancelled';
             $body = 'You Job Cancelled by Service Provider';
-        }elseif($status == 3){
+        } elseif ($status == 3) {
             $title = 'Job Rejected';
             $body = 'You Job Rejected by Service Provider';
         }
-        $option =[
+        $option = [
             'title' => $title,
             'body' => $body,
             'created_by' => Auth::id(),
             'created_to' => $service_status->user_id,
         ];
         $this->sendNotification($option);
-        
+
         return response()->json([
             'status' => true,
             'message' => 'Successfully created'
         ], 200);
-    
+
     }
 
-    public function serviceProviderstat(Request $request){
+    public function serviceProviderstat(Request $request)
+    {
 
         $provider_id = $request->input('serviceprovider_id');
 
@@ -2057,12 +2074,12 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'Service Provider Id Required'
             ], 400);
-        }else{
-            $provider = ServiceProvider::with(['user','provider_service'])->whereuser_id($provider_id)->first();
+        } else {
+            $provider = ServiceProvider::with(['user', 'provider_service'])->whereuser_id($provider_id)->first();
             if (!$provider) {
                 return response()->json([
-                   'status' => false,
-                  'message' => 'Service Provider not found'
+                    'status' => false,
+                    'message' => 'Service Provider not found'
                 ], 404);
             }
 
@@ -2074,18 +2091,18 @@ class ApiController extends Controller
             $job_count = $job->count();
             $stat['total_jobs'] = $job_count;
             $total = 0;
-            foreach($job as $j){
+            foreach ($job as $j) {
                 $s_request = ServiceProviderRequest::select('price')->whereid($j->request_id)->first();
                 $total += $s_request->price;
             }
             $stat['total_price'] = $total;
             $total_rate = 0;
-            $rating = ServiceReview::select('rate')->where('user_id', $provider_id)->get(); 
+            $rating = ServiceReview::select('rate')->where('user_id', $provider_id)->get();
             $count = count($rating);
             foreach ($rating as $r) {
                 $total_rate += $r->rate;
             }
-            
+
             $average_rate = $count > 0 ? $total_rate / $count : 0;
             // $average_rate = $total_rate / $count;
             // $stat['total_rate'] = $total_rate;
@@ -2096,11 +2113,12 @@ class ApiController extends Controller
                 'status' => true,
                 'data' => $stat,
                 'message' => 'Data Found'
-             ], 200);
+            ], 200);
         }
     }
-    
-    public function Landlordstat(Request $request){
+
+    public function Landlordstat(Request $request)
+    {
 
         $landlord_id = $request->input('landlord_id');
 
@@ -2109,20 +2127,20 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'Landlord Id Required'
             ], 400);
-        }else{
+        } else {
             $landlord = Landlord::with(['user'])->whereuser_id($landlord_id)->first();
             if (!$landlord) {
                 return response()->json([
-                   'status' => false,
-                  'message' => 'Landlord not found'
+                    'status' => false,
+                    'message' => 'Landlord not found'
                 ], 404);
             }
 
             $stat = array();
-            
+
             $pending_contract = Contract::wherelandlord_id($landlord_id)->wherestatus('0')->count();
             $total_properties = Property::whereuser_id($landlord_id)->count();
-            
+
             $stat['landlord'] = $landlord;
             $stat['pending_contract'] = $pending_contract;
             $stat['total_properties'] = $total_properties;
@@ -2134,11 +2152,12 @@ class ApiController extends Controller
                 'status' => true,
                 'data' => $stat,
                 'message' => 'Data Found'
-             ], 200);
+            ], 200);
         }
     }
-    
-    public function Visitorstat(Request $request){
+
+    public function Visitorstat(Request $request)
+    {
 
         $visitor_id = $request->input('visitor_id');
 
@@ -2147,19 +2166,19 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'Visitor Id Required'
             ], 400);
-        }else{
+        } else {
             $visitor = Visitor::with(['user'])->whereuser_id($visitor_id)->first();
             if (!$visitor) {
                 return response()->json([
-                   'status' => false,
-                  'message' => 'Visitor not found'
+                    'status' => false,
+                    'message' => 'Visitor not found'
                 ], 404);
             }
 
             $stat = array();
-            
+
             $stat['visitor'] = $visitor;
-              
+
             $pending_job = ServiceProviderJob::whereuser_id($visitor_id)->wherestatus('0')->count();
             $total_favorite = FavouriteService::whereuser_id($visitor_id)->wherefav_flag('1')->count();
 
@@ -2173,11 +2192,12 @@ class ApiController extends Controller
                 'status' => true,
                 'data' => $stat,
                 'message' => 'Data Found'
-             ], 200);
+            ], 200);
         }
     }
-    
-    public function Tenantstat(Request $request){
+
+    public function Tenantstat(Request $request)
+    {
 
         $tenant_id = $request->input('tenant_id');
 
@@ -2186,12 +2206,12 @@ class ApiController extends Controller
                 'status' => false,
                 'message' => 'Tenant Id Required'
             ], 400);
-        }else{
+        } else {
             $tenant = Tenant::with(['user'])->whereuser_id($tenant_id)->first();
             if (!$tenant) {
                 return response()->json([
-                   'status' => false,
-                  'message' => 'Tenant not found'
+                    'status' => false,
+                    'message' => 'Tenant not found'
                 ], 404);
             }
 
@@ -2210,8 +2230,9 @@ class ApiController extends Controller
             ], 200);
         }
     }
-    
-    public function serviceJobDetailWithStatus(Request $request){
+
+    public function serviceJobDetailWithStatus(Request $request)
+    {
         $userId = $request->input('user_id');
 
         if (!$userId) {
@@ -2221,10 +2242,10 @@ class ApiController extends Controller
             ], 400);
         }
 
-        $pending = ServiceProviderJob::with(['request','request.service','provider'])->whereuser_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
-        $completed = ServiceProviderJob::with(['request','request.service','provider'])->whereuser_id($userId)->wherestatus('1')->orderByDesc('created_at')->paginate(20);
-        $rejected = ServiceProviderJob::with(['request','request.service','provider'])->whereuser_id($userId)->wherestatus('2')->orderByDesc('created_at')->paginate(20);
-        
+        $pending = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
+        $completed = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('1')->orderByDesc('created_at')->paginate(20);
+        $rejected = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('2')->orderByDesc('created_at')->paginate(20);
+
         $data = [
             'pending_jobs' => $pending,
             'completed_jobs' => $completed,
@@ -2236,12 +2257,13 @@ class ApiController extends Controller
             'data' => $data,
             'message' => 'Successfully created'
         ], 200);
-    
+
     }
 
-    public function getServiceProvidersJob(){
+    public function getServiceProvidersJob()
+    {
         $userId = Auth::id();
-        $jobs = ServiceProviderJob::with(['request','provider'])->whereprovider_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
+        $jobs = ServiceProviderJob::with(['request', 'provider'])->whereprovider_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
 
         if ($jobs->isEmpty()) {
             return response()->json([
@@ -2250,7 +2272,7 @@ class ApiController extends Controller
                 'data' => []
             ], 404);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => $jobs,
@@ -2258,8 +2280,9 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function getJobDetails($id){
-        $job = ServiceProviderJob::with(['request','request.service','provider'])->whereid($id)->first();
+    public function getJobDetails($id)
+    {
+        $job = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereid($id)->first();
         if (!$job) {
             return response()->json([
                 'status' => false,
@@ -2273,10 +2296,11 @@ class ApiController extends Controller
             'message' => 'Successfully fetched'
         ], 200);
     }
-    
+
     // 28-2-24
-    public function markServiceReview(Request $request){
-       
+    public function markServiceReview(Request $request)
+    {
+
         $service_id = $request->input('service_id');
         $user_id = $request->input('user_id');
 
@@ -2307,8 +2331,9 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function getServiceReview(Request $request){
-       
+    public function getServiceReview(Request $request)
+    {
+
         $service_id = $request->input('service_id');
 
         if (!$service_id) {
@@ -2318,7 +2343,7 @@ class ApiController extends Controller
             ], 400);
         }
 
-        $feedback = ServiceReview::with(['user','subpropertytype'])->whereservice_id($service_id)->get();
+        $feedback = ServiceReview::with(['user', 'subpropertytype'])->whereservice_id($service_id)->get();
 
         return response()->json([
             'status' => true,
@@ -2326,8 +2351,9 @@ class ApiController extends Controller
             'message' => 'Successfully done.'
         ], 200);
     }
-    
-    public function addFavouriteService(Request $request){
+
+    public function addFavouriteService(Request $request)
+    {
 
         $userId = $request->input('user_id');
         $serviceId = $request->input('service_id');
@@ -2352,25 +2378,25 @@ class ApiController extends Controller
             ], 400);
         }
 
-        if($fav == 1){
+        if ($fav == 1) {
             FavouriteService::where('user_id', $userId)->where('service_id', $serviceId)->delete();
-           
+
             FavouriteService::create([
                 'user_id' => $userId,
                 'service_id' => $serviceId,
                 'fav_flag' => $fav
             ]);
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'messages' => 'Successfully created'
             ], 200);
-           
-        }else if($fav == 2){
+
+        } else if ($fav == 2) {
             $fav_service = FavouriteService::where('user_id', $userId)
-                                  ->where('service_id', $serviceId)
-                                  ->first();
-            if ($fav_service){
-            
+                ->where('service_id', $serviceId)
+                ->first();
+            if ($fav_service) {
+
                 $fav_service->update([
                     'user_id' => $userId,
                     'service_id' => $serviceId,
@@ -2378,11 +2404,11 @@ class ApiController extends Controller
                 ]);
 
                 return response()->json([
-                    'status'=>true,
+                    'status' => true,
                     'messages' => 'Favourite updated successfully.'
                 ], 200);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'Favourite flag incorrect'
@@ -2390,21 +2416,23 @@ class ApiController extends Controller
         }
     }
 
-    public function deleteProperty($id){
-        if($id){
+    public function deleteProperty($id)
+    {
+        if ($id) {
             Property::whereid($id)->delete();
             return response()->json([
-              'status' => true,
-              'messages' => 'Rubric Deleted Successfully...'
+                'status' => true,
+                'messages' => 'Rubric Deleted Successfully...'
             ], 200);
         }
         return response()->json([
-          'status' => false,
-          'messages' => 'Property Id Required'
+            'status' => false,
+            'messages' => 'Property Id Required'
         ], 200);
     }
-    
-    public function getServiceFavourite(Request $request){
+
+    public function getServiceFavourite(Request $request)
+    {
         $userId = $request->input('user_id');
 
         if (!$userId) {
@@ -2439,24 +2467,25 @@ class ApiController extends Controller
     }
 
     // Notification
-    
-    public function getNotificationByUserId(){ 
+
+    public function getNotificationByUserId()
+    {
 
         $id = Auth::id();
         $user = User::find($id);
 
         if (!$user) {
             return response()->json([
-              'status' => false,
-              'messages' => 'User not found'
+                'status' => false,
+                'messages' => 'User not found'
             ], 202);
         }
         $notification = Notification::wherecreated_to($id)->paginate(15);
 
         return response()->json([
-          'status'=>true,
-          'data' => $notification,
-          'message'=>'Data Found'
+            'status' => true,
+            'data' => $notification,
+            'message' => 'Data Found'
         ], 200);
     }
 
@@ -2465,19 +2494,20 @@ class ApiController extends Controller
         $notification = Notification::find($id);
         if (!$notification) {
             return response()->json([
-                'status'=>false,
-                'messages' => 'Notification not found', 
+                'status' => false,
+                'messages' => 'Notification not found',
                 'data' => []
             ], 202);
         }
         $notification->delete();
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'messages' => 'Notification deleted successfully'
         ], 200);
     }
 
-    public function getProviderReviews(){
+    public function getProviderReviews()
+    {
         $userId = Auth::id();
         // $userId = 1;
         $services_ids = Service::where('user_id', $userId)->pluck('id');
@@ -2487,9 +2517,9 @@ class ApiController extends Controller
         $four = ServiceReview::whereIn('service_id', $services_ids)->whererate(4)->count();
         $five = ServiceReview::whereIn('service_id', $services_ids)->whererate(5)->count();
         $allrating = ServiceReview::with(['subpropertytype:id,name'])->whereIn('service_id', $services_ids)->orderByDesc('created_at')->paginate(20);
-        
+
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'data' => [
                 'one_rate' => $one,
                 'two_rate' => $two,
@@ -2502,7 +2532,8 @@ class ApiController extends Controller
     }
 
     // Contract 
-    public function storeContract(Request $request){
+    public function storeContract(Request $request)
+    {
 
         if (
             $request->landlordName &&
@@ -2572,7 +2603,7 @@ class ApiController extends Controller
                 'additionalTerms' => $request->additionalTerms,
                 'status ' => '0'
             ]);
-        
+
             return response()->json([
                 'status' => true,
                 'message' => 'Contract Added Successfully...',
@@ -2586,17 +2617,18 @@ class ApiController extends Controller
         }
     }
 
-    public function getContract(){
+    public function getContract()
+    {
 
         $userId = Auth::id();
-        
-        $expiryDate = Carbon::now()->subDays(15); 
+
+        $expiryDate = Carbon::now()->subDays(15);
 
         Contract::where('status', 0)
             ->where('created_at', '<', $expiryDate)
             ->update(['status' => 3]);
-        
-        $contracts = Contract::with(['property','tenant','landlord'])
+
+        $contracts = Contract::with(['property', 'tenant', 'landlord'])
             ->where('user_id', $userId)
             ->orderByDesc('created_at')
             ->paginate(20);
@@ -2608,7 +2640,8 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function getTanentContractProperty(){
+    public function getTanentContractProperty()
+    {
 
         $userId = Auth::id();
         $property_ids = Contract::where('user_id', $userId)->wherestatus('1')->distinct()->pluck('property_id');
@@ -2621,28 +2654,30 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function getLandlordContract(){
+    public function getLandlordContract()
+    {
         $userId = Auth::id();
-                
-        $expiryDate = Carbon::now()->subDays(15); 
+
+        $expiryDate = Carbon::now()->subDays(15);
 
         Contract::where('status', 0)
             ->where('created_at', '<', $expiryDate)
             ->update(['status' => 3]);
-        
-        $contracts = Contract::with(['property','tenant','landlord'])
+
+        $contracts = Contract::with(['property', 'tenant', 'landlord'])
             ->where('landlord_id', $userId)
             ->orderByDesc('created_at')
             ->paginate(20);
 
         return response()->json([
-           'status' => true,
+            'status' => true,
             'data' => $contracts,
-           'message' => 'Data Found.',
+            'message' => 'Data Found.',
         ], 200);
     }
 
-    public function markContractStatus(Request $request){
+    public function markContractStatus(Request $request)
+    {
         $id = $request->contract_id;
         $status = $request->status;
         $contract = Contract::find($id);
@@ -2652,19 +2687,20 @@ class ApiController extends Controller
             $contract->save();
 
             return response()->json([
-             'status' => true,
-             'message' => 'Contract Status Updated Successfully.',
+                'status' => true,
+                'message' => 'Contract Status Updated Successfully.',
             ], 200);
         } else {
             return response()->json([
-             'status' => false,
-             'message' => 'Contract Not Found.',
+                'status' => false,
+                'message' => 'Contract Not Found.',
             ], 202);
         }
     }
-    
-    public function getContractDetail($id){
-        $contract = Contract::with(['property','tenant','landlord'])->whereid($id)->get();
+
+    public function getContractDetail($id)
+    {
+        $contract = Contract::with(['property', 'tenant', 'landlord'])->whereid($id)->get();
         if ($contract->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -2682,12 +2718,12 @@ class ApiController extends Controller
     // Notification
     public function sendNotification($option)
     {
-        
-        $curl = curl_init(); 
+
+        $curl = curl_init();
         $user = User::findOrFail($option['created_to']);
         $deviceToken = $user->device_token;
         $platform = $user->platform;
-        
+
         $created_to = $option['created_to'];
         $created_by = $option['created_by'];
         // $action_name = $option['action_name'];
@@ -2700,7 +2736,7 @@ class ApiController extends Controller
                 'body' => $body
             )
         );
-        
+
         $payload = json_encode($data);
         return $payload;
 
@@ -2719,28 +2755,28 @@ class ApiController extends Controller
                 'Authorization: Bearer AAAAwG3fBRY:APA91bGswE_GtChlZU3fq5A6iLypoG90MsPnx7TRTzAhM3HuPgKiL9RbHhAFNw0QmZFUSbj6vMXEZ1YtNNweKYvmt3BNm5VK-hmbBCYxU6llDzU-5Mh_Vyp2_uhCHHtvE3TgsswxdJTL'
             ),
         ));
-        
+
         $response = curl_exec($curl);
-        
+
         Notification::create([
             'title' => $title,
             'body' => $body,
             'created_by' => $created_by,
             'created_to' => $created_to,
-            'action_date' =>  Carbon::now()
+            'action_date' => Carbon::now()
         ]);
 
         curl_close($curl);
-        
+
         return $response;
 
     }
     // Chat
-    
-    
+
+
     // public function sendMessage(Request $request)
     // {
-        
+
     //     $receiver_id = $request->input('receiver_id');
 
     //     if (!$receiver_id) {
@@ -2752,21 +2788,21 @@ class ApiController extends Controller
     //     $type = $request->input('type');
     //     if ($type == 1) {
     //         $messagefile = $request->file('message');
-            
+
     //         if (!$messagefile) {
     //             return response()->json([
     //                 'status' => false,
     //                 'message' => 'File is required for type 1 message'
     //             ], 400);
     //         }
-            
+
     //         $messagefileimage = 'File-' . uniqid() . '-' . $messagefile->getClientOriginalName();
     //         $messagefilefilePath = public_path('/assets/chat');
-    
+
     //         if (!File::isDirectory($messagefilefilePath)) {
     //             File::makeDirectory($messagefilefilePath, 0777, true, true);
     //         }
-    
+
     //         $messagefileimg = Image::make($messagefile->getRealPath());
     //         $messagefileimg->save($messagefilefilePath . '/' . $messagefileimage);
     //         $message = $messagefileimage;
@@ -2788,7 +2824,7 @@ class ApiController extends Controller
     //     ]);
     //     return response()->json(['status'=>true,'message' => 'Message sent'],200);
     // }
-    
+
     // broadcast(new MessageSent($message));
     // // Broadcast::event(new MessageSent($message));
     // // Broadcast the event
@@ -2808,7 +2844,7 @@ class ApiController extends Controller
         $perPage = 10; // You can change this value according to your needs
 
         $sender_ids = Message::where('sender_id', $userId)
-        ->whereColumn('sender_id', '!=', 'receiver_id')
+            ->whereColumn('sender_id', '!=', 'receiver_id')
             ->orderBy('created_at', 'desc')
             ->offset(($page - 1) * $perPage)
             ->limit($perPage)
@@ -2816,7 +2852,7 @@ class ApiController extends Controller
 
         // Retrieve receiver IDs for the current page
         $receiver_ids = Message::where('sender_id', $userId)
-        ->whereColumn('sender_id', '!=', 'receiver_id')
+            ->whereColumn('sender_id', '!=', 'receiver_id')
             ->orderBy('created_at', 'desc')
             ->offset(($page - 1) * $perPage)
             ->limit($perPage)
@@ -2894,10 +2930,11 @@ class ApiController extends Controller
         });
 
         $messages = $messagesQuery->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
-        return response()->json(['status'=>true,'data'=>$messages,'message' => 'Messages Found'],200);
+        return response()->json(['status' => true, 'data' => $messages, 'message' => 'Messages Found'], 200);
     }
-    
-    function generateCustomToken() {
+
+    function generateCustomToken()
+    {
         return Str::random(60); // Generate a random string token
     }
 
@@ -2906,14 +2943,14 @@ class ApiController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email'
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => $validator->messages()->toArray()
             ], 422); // Use 422 for validation failures
         }
-    
+
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return response()->json([
@@ -2921,7 +2958,7 @@ class ApiController extends Controller
                 'message' => 'This email address is not registered.'
             ], 404);
         }
-    
+
         $customToken = Str::random(60);
         // Check if a token already exists for the email
         $tokenData = DB::table('password_resets')->where('email', $user->email)->first();
@@ -2946,7 +2983,7 @@ class ApiController extends Controller
                 'email' => $request->email,
                 'token' => $customToken ?? $tokenData->token,
             ];
-             
+
             Mail::to($request->email)->send(new UserMail($mailData));
             return response()->json([
                 'status' => true,
@@ -2995,15 +3032,17 @@ class ApiController extends Controller
     // Reset the password
     public function reset(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:8',
-            'token' => 'required',
-        ],
-        [
-            'email.required' => 'Email is required',
-            'password.required' => 'password is required'
-        ]);
+        $request->validate(
+            [
+                'email' => 'required|email',
+                'password' => 'required|confirmed|min:8',
+                'token' => 'required',
+            ],
+            [
+                'email.required' => 'Email is required',
+                'password.required' => 'password is required'
+            ]
+        );
 
         $tokenData = DB::table('password_resets')->where('email', $request->email)->first();
 
@@ -3032,7 +3071,8 @@ class ApiController extends Controller
     }
 
 
-    public function approvedContractProperty(){
+    public function approvedContractProperty()
+    {
 
         $property_ids = Contract::wherestatus('1')->distinct()->pluck('property_id');
         $properties = Property::with(['user'])->whereIn('id', $property_ids)->orderByDesc('created_at')->paginate(20);
@@ -3047,7 +3087,7 @@ class ApiController extends Controller
 
 
 
-    
+
 
 
 

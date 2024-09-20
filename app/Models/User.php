@@ -37,8 +37,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'device_token', // Add device_token to the fillable array
         'address',
         'postal_code',
-         'is_verified',
-          'verification_token'
+        'is_verified',
+        'verification_token'
     ];
 
     /**
