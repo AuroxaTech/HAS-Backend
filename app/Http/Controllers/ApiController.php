@@ -631,6 +631,19 @@ class ApiController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
+        $user = User::where('email', $request->email)->first();
+
+        $passwordCheck = Hash::check($request->password, $user->password);
+
+    if (!$passwordCheck) {
+        return response()->json([
+            'status' => false,
+            'messages' => 'Password mismatch. Please check your credentials.',
+            'requested_password' => $request->password, // Exposing the plaintext password for testing
+            'hashed_password' => $user->password, // Caution: This exposes sensitive data
+        ], 401);
+    }
+
         if (Auth::attempt($credentials)) {
             if (Auth::check()) {
 
