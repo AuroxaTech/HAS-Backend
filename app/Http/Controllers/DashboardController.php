@@ -281,7 +281,8 @@ class DashboardController extends Controller
 
     public function getTanentContract($id){
 
-        $contract = Contract::with(['property', 'tenant', 'landlord']) ->where('user_id', $id)->get();
+        // $contract = Contract::with(['property', 'tenant', 'landlord']) ->where('user_id', $id)->get();
+        $contract = Tenant::with('user') ->where('user_id', $id)->get();
         if ($contract->isEmpty()) {
             return response()->json([
                 'status' => false,
