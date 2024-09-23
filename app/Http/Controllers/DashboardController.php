@@ -247,7 +247,7 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Property not found'
-            ], 404); // Use 404 for not found
+            ], 404); 
         }
 
         Property::whereid($id)->delete();
