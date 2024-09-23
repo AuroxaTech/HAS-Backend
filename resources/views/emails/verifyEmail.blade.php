@@ -6,7 +6,7 @@
     <title>Verify Your Email Address</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f4f4f7;
             margin: 0;
             padding: 0;
@@ -18,22 +18,22 @@
             max-width: 600px;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .email-header {
-            background-color: #226DFF;
+            background-color: #4CAF50; /* Updated button color */
             color: #ffffff;
             text-align: center;
             padding: 20px;
         }
         .email-header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 26px;
         }
         .email-body {
             padding: 20px;
             font-size: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #333333;
         }
         .email-body p {
@@ -41,18 +41,21 @@
         }
         .verify-button {
             display: block;
-            background-color: #226DFF;
+            background-color: #4CAF50; /* Updated button color */
             color: #ffffff;
             padding: 12px 24px;
             border-radius: 5px;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 18px; /* Slightly larger font */
             margin: 20px auto 0;
             width: fit-content;
             text-align: center;
+            transition: background-color 0.3s;
         }
-        .email-body .post-button-text {
-            
+        .verify-button:hover {
+            background-color: #45a049; /* Darker shade on hover */
+        }
+        .post-button-text {
             padding-top: 20px;
             color: #555555;
         }
