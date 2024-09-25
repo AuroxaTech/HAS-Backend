@@ -153,12 +153,13 @@ Route::view('/socket', 'socket')->name('socket');
 
 // Route::get('/websocket', [WebSocketController::class, 'handleWebSocket']);
 
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+// Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 
 Route::post('/websocket', ['uses' =>'App\Http\Controllers\WebSocketController@handleWebSocket','as' => 'handleWebSocket']);
 
 
 Route::post('/admin-register', ['uses' =>'App\Http\Controllers\DashboardController@adminRegister','as' => 'adminregister']);
+Route::get('/users', ['uses' =>'App\Http\Controllers\DashboardController@countUsers']);
 Route::get('/get-users/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getUsers']);
 Route::get('/get-properties/{id}', ['uses' =>'App\Http\Controllers\DashboardController@getProperties','as' => 'getproperties']);
 Route::delete('/delete-user/{id}', ['uses' =>'App\Http\Controllers\DashboardController@destroyUser','as' => 'destroyuser']);
