@@ -319,5 +319,23 @@ class DashboardController extends Controller
         ], 200);
     }
 
+    public function countUsers()
+    {
+        // Count users by role
+        $totalUser = User::count();
+        $landlordCount = User::where('role_id', '1')->count();
+        $tenantCount = User::where('role_id', '2')->count();
+        $serviceProviderCount = User::where('role_id', '3')->count();
+        $visitorCount = User::where('role_id', '4')->count();
+
+        return response()->json([
+            'totalUsers' => $totalUser,
+            'landlords' => $landlordCount,
+            'tenants' => $tenantCount,
+            'service_providers' => $serviceProviderCount,
+            'visitors' => $visitorCount,
+        ]);
+    }
+
 
 }
