@@ -1086,7 +1086,6 @@ class ApiController extends Controller
 
     public function storeService(Request $request)
     {
-        dd($request->all());
         try {
             $validation = Validator::make(
                 $request->all(),
