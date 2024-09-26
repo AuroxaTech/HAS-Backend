@@ -44,7 +44,6 @@ Route::get('/logout', [ApiController::class, 'logout']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-   
     Route::post('/service-provider/{serviceProviderRequest}/request', UpdateServiceProviderRequest::class);
     
     Route::middleware(['is.approved.sp'])->group(function () {

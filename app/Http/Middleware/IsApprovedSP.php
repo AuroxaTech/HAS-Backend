@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class IsApprovedSP
 {
@@ -16,6 +17,7 @@ class IsApprovedSP
      */
     public function handle(Request $request, Closure $next)
     {
+        \Log::info('User authenticated: ' . auth()->check());
         // Assuming you have an 'approved' column in your users table
         // Adjust the column name based on your actual database schema
         if (auth()->check() && auth()->user()->role_id == 3 && is_null(auth()->user()->approved_at)) {
