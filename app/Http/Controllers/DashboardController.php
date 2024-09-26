@@ -38,7 +38,7 @@ class DashboardController extends Controller
     {
         // $this->middleware('auth');
     }
-    
+
     public function adminRegister(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -48,26 +48,26 @@ class DashboardController extends Controller
             'role_id' => 'required',
             'phone_number' => 'required'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
-                'status'=>false,
-                'messages' => $validator->messages()->toArray(), 
+                'status' => false,
+                'messages' => $validator->messages()->toArray(),
                 'error' => 'invalid_fields_data'
             ], 202);
         }
-        
-        if($request->role_id == 5){
+
+        if ($request->role_id == 5) {
             $image_name = '';
             if ($request->hasFile('profileimage')) {
                 $profileimage = $request->file('profileimage');
                 $image = 'Profile-' . uniqid() . '-' . $profileimage->getClientOriginalName();
                 $filePath = public_path('/assets/profile_images');
-    
+
                 if (!File::isDirectory($filePath)) {
                     File::makeDirectory($filePath, 0777, true, true);
                 }
-    
+
                 $img = Image::make($profileimage->getRealPath());
                 $img->save($filePath . '/' . $image);
                 $image_name = $image;
@@ -85,34 +85,34 @@ class DashboardController extends Controller
                 'status' => true,
                 'messages' => 'Registered Successfully'
             ], 200);
-        }else{
-            
+        } else {
+
             return response()->json([
                 'status' => true,
                 'messages' => 'Role should be admin'
-            ], 200);            
+            ], 200);
         }
     }
 
     public function getUsers($role_id)
     {
-        if($role_id =='5'){
+        if ($role_id == '5') {
             $user = [];
-        }else{
+        } else {
             $users = User::where('role_id', $role_id)->paginate(20);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => $users,
             'message' => 'Data Found....'
         ], 200);
     }
-    
+
     public function getProperties($landlord_id)
     {
         $users = User::select('role_id')->whereid($landlord_id)->first();
-           
+
         if (!$users) {
             return response()->json([
                 'status' => false,
@@ -120,13 +120,13 @@ class DashboardController extends Controller
                 'data' => []
             ], 404);
         }
-        
-        if($users->role_id == '1'){
+
+        if ($users->role_id == '1') {
             $properties = Property::selectuser_id($landlord_id)->paginate(20);
-        }else{
+        } else {
             $properties = Property::paginate(20);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => $properties,
@@ -134,7 +134,8 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function destroyUser($id){
+    public function destroyUser($id)
+    {
 
         $user = User::find($id);
         if (!$user) {
@@ -148,7 +149,7 @@ class DashboardController extends Controller
             case 1:
                 // $landlordIds = Landlord::where('user_id', $id)->pluck('id');
                 $propertyIds = Property::where('user_id', $id)->pluck('id');
-    
+
                 FavouriteProperty::whereIn('property_id', $propertyIds)->delete();
                 Property::where('user_id', $id)->delete();
                 Landlord::where('user_id', $id)->delete();
@@ -162,7 +163,7 @@ class DashboardController extends Controller
                 $serviceIds = Service::where('user_id', $id)->pluck('id');
                 $requestIds = ServiceProviderRequest::whereIn('service_id', $serviceIds)->pluck('id');
                 $jobIds = ServiceProviderJob::whereIn('request_id', $requestIds)->pluck('id');
-                
+
                 ServiceProviderJob::whereIn('request_id', $jobIds)->delete();
                 ServiceProviderRequest::whereIn('id', $requestIds)->delete();
                 ServiceReview::whereIn('service_id', $serviceIds)->delete();
@@ -175,7 +176,7 @@ class DashboardController extends Controller
                 User::whereid($id)->delete();
                 break;
         }
-    
+
 
         return response()->json([
             'status' => true,
@@ -183,9 +184,10 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function getAllContracts() {
-        
-        $contracts = Contract::with(['property','tenant','landlord'])
+    public function getAllContracts()
+    {
+
+        $contracts = Contract::with(['property', 'tenant', 'landlord'])
             ->orderByDesc('created_at')
             ->paginate(20);
 
@@ -201,7 +203,7 @@ class DashboardController extends Controller
         $tenantsCount = User::where('role_id', 2)->count();
         $serviceProvidersCount = User::where('role_id', 3)->count();
         $contractsCount = Contract::where('id', '>', 1)->count();
-        
+
         if ($landlordsCount === 0 && $tenantsCount === 0 && $serviceProvidersCount === 0 && $contractsCount === 0) {
             return response()->json([
                 'status' => false,
@@ -209,7 +211,7 @@ class DashboardController extends Controller
                 'data' => []
             ], 404);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => [
@@ -217,14 +219,15 @@ class DashboardController extends Controller
                 'tenants_count' => $tenantsCount,
                 'service_providers_count' => $serviceProvidersCount,
                 'contracts_count' => $contractsCount
-                
+
             ],
             'message' => 'Data Found....'
         ], 200);
     }
-    public function getContract($id){
+    public function getContract($id)
+    {
 
-        $contract = Contract::with(['property','tenant','landlord'])->whereid($id)->get();
+        $contract = Contract::with(['property', 'tenant', 'landlord'])->whereid($id)->get();
         if ($contract->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -232,7 +235,7 @@ class DashboardController extends Controller
                 'data' => []
             ], 404);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => $contract,
@@ -240,18 +243,19 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function destroyProperty($id){
+    public function destroyProperty($id)
+    {
 
         $property = Property::find($id);
         if (!$property) {
             return response()->json([
                 'status' => false,
                 'message' => 'Property not found'
-            ], 404); 
+            ], 404);
         }
 
         Property::whereid($id)->delete();
-    
+
 
         return response()->json([
             'status' => true,
@@ -259,8 +263,9 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    
-    public function destroyContract($id){
+
+    public function destroyContract($id)
+    {
 
         $contract = Contract::find($id);
         if (!$contract) {
@@ -271,7 +276,7 @@ class DashboardController extends Controller
         }
 
         Contract::whereid($id)->delete();
-    
+
 
         return response()->json([
             'status' => true,
@@ -279,9 +284,10 @@ class DashboardController extends Controller
         ], 200);
     }
 
-    public function getTanentContract($id){
+    public function getTanentContract($id)
+    {
 
-        $contract = Contract::with(['property', 'tenant', 'landlord']) ->where('user_id', $id)->get();
+        $contract = Contract::with(['property', 'tenant', 'landlord'])->where('user_id', $id)->get();
         // $contract = Tenant::with('user') ->where('user_id', $id)->get();
         if ($contract->isEmpty()) {
             return response()->json([
@@ -290,20 +296,21 @@ class DashboardController extends Controller
                 'data' => []
             ], 404);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => $contract,
             'message' => 'Successfully fetched'
         ], 200);
     }
-    
-    public function getProviderServices($id){
 
-        
+    public function getProviderServices($id)
+    {
+
+
         $service = ServiceProvider::with(['user'])->where('user_id', $id)->get();
 
-        
+
         if ($service->isEmpty()) {
             return response()->json([
                 'status' => false,
@@ -311,7 +318,7 @@ class DashboardController extends Controller
                 'data' => []
             ], 404);
         }
-        
+
         return response()->json([
             'status' => true,
             'data' => $service,
@@ -322,19 +329,22 @@ class DashboardController extends Controller
     public function countUsers()
     {
         // Count users by role
-        $totalUser = User::count();
+     
         $landlordCount = User::where('role_id', '1')->count();
         $tenantCount = User::where('role_id', '2')->count();
         $serviceProviderCount = User::where('role_id', '3')->count();
         $visitorCount = User::where('role_id', '4')->count();
 
         return response()->json([
-            'totalUsers' => $totalUser,
-            'landlords' => $landlordCount,
-            'tenants' => $tenantCount,
-            'service_providers' => $serviceProviderCount,
-            'visitors' => $visitorCount,
-        ]);
+            'status' => true,
+            'data' => [
+                'landlords' => $landlordCount,
+                'tenants' => $tenantCount,
+                'service_providers' => $serviceProviderCount,
+                'visitors' => $visitorCount,
+            ],
+            'message' => 'Successfully fetched',
+        ], 200);
     }
 
 

@@ -25,7 +25,6 @@ class IsApprovedSP
                 'message' => 'Your profile is not approved.'
             ], 403);
         }
-
         return $next($request);
     }
 }
