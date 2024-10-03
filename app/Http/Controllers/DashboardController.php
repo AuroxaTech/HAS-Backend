@@ -46,7 +46,8 @@ class DashboardController extends Controller
             'email' => 'required|unique:users',
             'password' => 'required|confirmed',
             'role_id' => 'required',
-            'phone_number' => 'required'
+            'phone_number' => 'required',
+            'username' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -76,9 +77,10 @@ class DashboardController extends Controller
                 'fullname' => $request->fullname,
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
+                'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'role_id' => $request->role_id, // Use the provided role_id
-                'profileimage' => $image_name
+                'profileimage' => $image_name,
             ]);
 
             return response()->json([
