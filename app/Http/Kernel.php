@@ -72,6 +72,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'is.approved.sp' => \App\Http\Middleware\IsApprovedSP::class,
+        'checkRole' => \App\Http\Middleware\RoleMiddleware::class,
     ];
     
     protected $commands = [
