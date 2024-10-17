@@ -1317,18 +1317,18 @@ class ApiController extends Controller
         //         'message' => 'User Id Required'
         //     ], 400);
         // }
-
         $userId = Auth::id();
-
         $searchQuery = $request->query('search');
         $serviceName = $request->has('service_name') ? $request->input('service_name') : null;
         $min = $request->input('minPrice');
         $max = $request->input('maxPrice');
         $country = $request->input('country');
         $city = $request->input('city');
-
-        $serviceQuery = Service::where('user_id',$userId)->with('user', 'provider');
-
+        if($request->user_id){
+            $serviceQuery = Service::where('user_id',$userId)->with('user', 'provider');
+        }else{
+            $serviceQuery = Service::with('user', 'provider');
+        }
         if ($min && $max) {
             $serviceQuery->whereBetween('pricing', [$min, $max]);
         } elseif ($min) {
@@ -1761,7 +1761,7 @@ class ApiController extends Controller
             ], 400);
         }
 
-        if ($request->address && $request->price && $request->lat && $request->long && $request->property_type && $request->date && $request->time) {
+        if ($request->address && $request->lat && $request->long && $request->property_type && $request->date && $request->time) {
 
             ServiceProviderRequest::create([
                 'user_id' => $userId,
@@ -1771,8 +1771,9 @@ class ApiController extends Controller
                 'lat' => $request->lat,
                 'long' => $request->long,
                 'property_type' => $request->property_type,
-                'price' => $request->price,
+                'price' => $request->price ?? null,
                 'date' => $request->date,
+                'postal_code'=>$request->postal_code,
                 'time' => $request->time,
                 'description' => $request->description,
                 'additional_info' => $request->additional_info,
