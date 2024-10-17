@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('long',255)->nullable();
             $table->integer('property_type')->nullable();
             $table->string('price',255)->nullable();
+            $table->string('postal_code',255)->nullable();
             $table->string('date',255)->nullable();
             $table->string('time',255)->nullable();
             $table->text('description')->nullable();
