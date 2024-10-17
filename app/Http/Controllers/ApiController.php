@@ -1327,7 +1327,7 @@ class ApiController extends Controller
         $country = $request->input('country');
         $city = $request->input('city');
 
-        $serviceQuery = Service::with('user', 'provider');
+        $serviceQuery = Service::where('user_id',$userId)->with('user', 'provider');
 
         if ($min && $max) {
             $serviceQuery->whereBetween('pricing', [$min, $max]);
