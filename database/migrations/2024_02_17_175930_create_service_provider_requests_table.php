@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('property_type')->nullable();
             $table->string('price',255)->nullable();
             $table->string('postal_code',255)->nullable();
+            $table->string('is_applied')->default('false');
             $table->string('date',255)->nullable();
             $table->string('time',255)->nullable();
             $table->text('description')->nullable();
