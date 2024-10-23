@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConferenceController;
@@ -125,6 +126,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/landlord-stat', [ApiController::class, 'Landlordstat']);
         Route::post('/visitor-stat', [ApiController::class, 'Visitorstat']);
         Route::post('/tenant-stat', [ApiController::class, 'Tenantstat']);
+
+        //payment route
+        Route::post('payment',[PaymentController::class, 'store']);
     });
 
     Route::middleware(['checkRole:5'])->group(function () {
