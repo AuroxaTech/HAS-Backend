@@ -26,6 +26,7 @@ class ServiceProviderRequest extends Model
         'approved',
         'decline',
         'postal_code',
+        'is_applied'
     ];
 
     public function user(){

@@ -1774,6 +1774,7 @@ class ApiController extends Controller
                 'price' => $request->price ?? null,
                 'date' => $request->date,
                 'postal_code'=>$request->postal_code,
+                'is_applied'=>$request->is_applied,
                 'time' => $request->time,
                 'description' => $request->description,
                 'additional_info' => $request->additional_info,
