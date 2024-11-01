@@ -1325,7 +1325,9 @@ class ApiController extends Controller
         $country = $request->input('country');
         $city = $request->input('city');
         if($request->user_id){
-            $serviceQuery = Service::where('user_id',$userId)->with('user', 'provider');
+            $serviceQuery = Service::where('user_id', $userId)
+            ->with(['user', 'provider', 'serviceProviderRequests']);
+            //$serviceQuery = Service::where('user_id',$userId)->with('user', 'provider', 'servicesproviderrequest');
         }else{
             $serviceQuery = Service::with('user', 'provider');
         }
