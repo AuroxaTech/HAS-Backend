@@ -18,7 +18,7 @@ class PaymentController extends Controller
         // Validate the incoming request data
         $validatedData = $request->validate([
             'service_id' => 'nullable|exists:services,id',
-            'service_provider_id' => 'nullable|exists:service_providers,id',
+            'service_provider_id' => 'nullable',
             'price' => 'required|string|max:255',
         ]);
 
