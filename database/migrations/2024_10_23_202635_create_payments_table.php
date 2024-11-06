@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('service_provider_id')->nullable()->constrained()->onDelete('cascade');
+            // In your migration file for the services table
+            $table->foreignId('service_provider_id')->constrained('users')->onDelete('cascade');
             $table->string('price');
             $table->timestamps();
         });
