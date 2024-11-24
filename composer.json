@@ -10,6 +10,7 @@
         "cboden/ratchet": "^0.4.4",
         "ezyang/htmlpurifier": "^4.17",
         "fruitcake/laravel-cors": "^3.0",
+        "google/apiclient": "*",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "*",
         "laravel/framework": "^9.19",
