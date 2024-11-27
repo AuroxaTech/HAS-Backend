@@ -13,6 +13,7 @@
         "google/apiclient": "*",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "*",
+        "kreait/laravel-firebase": "*",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.7",
