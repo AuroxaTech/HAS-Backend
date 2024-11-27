@@ -40,6 +40,8 @@ use App\Mail\UserMail;
 use Illuminate\Auth\Events\Registered;
 
 
+
+
 class ApiController extends Controller
 {
     public function __construct()
@@ -99,7 +101,6 @@ class ApiController extends Controller
                 return [];
         }
     }
-
     public function userRegister(Request $request)
     {
 
@@ -132,12 +133,7 @@ class ApiController extends Controller
 
             if (!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 0777, true, true);
-
-            }
-
-            $img = Image::make($profileimage->getRealPath());
-
-                
+                $img = Image::make($profileimage->getRealPath());
             $img->save($filePath . '/' . $image);
             $image_name = $image;
         }
@@ -166,7 +162,6 @@ class ApiController extends Controller
                     ], 202);
                     // return response()->json(['message' => 'Electricity Bill Required'], 400);
                 }
-
                 if ($request->hasFile('property_images')) {
                     $files = $request->file('property_images');
                     $file_names = [];
@@ -185,9 +180,7 @@ class ApiController extends Controller
                     }
 
                     $comma_separated_names = implode(',', $file_names);
-
-                } else {
-
+                }else {
                     return response()->json([
                         'status' => false,
                         'messages' => 'Property Image Required',
@@ -210,7 +203,6 @@ class ApiController extends Controller
                     'postal_code' => $request->postal_code,
                     'verification_token' => Str::random(64)
                 ]);
-
                 Landlord::create([
                     'user_id' => $user->id,
                     'no_of_property' => $request->no_of_property,
@@ -235,9 +227,8 @@ class ApiController extends Controller
                     'property_type' => $request->property_type,
                     'property_sub_type' => $request->property_sub_type,
                 ]);
-
-            } else {
-
+            }
+            else {
                 return response()->json([
                     'status' => false,
                     'messages' => 'Fill Required Fields',
@@ -247,9 +238,7 @@ class ApiController extends Controller
             }
         } elseif ($request->role_id == 2) {
             if ($request->last_status == 1) {
-
-                // if ($request->last_landlord_name && $request->last_tenancy && $request->last_landlord_contact && $request->occupation && $request->leased_duration && $request->no_of_occupants) {
-
+                // if ($request->last_landlord_name && $request->last_tenancy && $request->last_landlord_contact && $request->occupation && $request>
                 if ($request->occupation && $request->leased_duration && $request->no_of_occupants) {
                     $user = User::create([
                         'fullname' => $request->fullname,
@@ -265,43 +254,12 @@ class ApiController extends Controller
                         'postal_code' => $request->postal_code,
                         'verification_token' => Str::random(64)
                     ]);
-
                     Tenant::create([
                         'user_id' => $user->id,
                         'last_status' => $request->last_status,
                         'last_tenancy' => $request->last_tenancy,
                         'last_landlord_name' => $request->last_landlord_name,
                         'last_landlord_contact' => $request->last_landlord_contact,
-                        'occupation' => $request->occupation,
-                        'leased_duration' => $request->leased_duration,
-                        'no_of_occupants' => $request->no_of_occupants,
-                    ]);
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'messages' => 'Fill Required Fields',
-                        'data' => []
-                    ], 202);
-                }
-
-            } else {
-                if ($request->occupation && $request->leased_duration && $request->no_of_occupants) {
-                    $user = User::create([
-                        'fullname' => $request->fullname,
-                        'email' => $request->email,
-                        'username' => $request->username,
-                        'phone_number' => $request->phone_number,
-                        'password' => Hash::make($request->password),
-                        'role_id' => $request->role_id,
-                        'profileimage' => $image_name,
-                        'platform' => $request->platform,
-                        'device_token' => $request->device_token,
-                        'verification_token' => Str::random(64)
-                    ]);
-
-                    Tenant::create([
-                        'user_id' => $user->id,
-                        'last_status' => $request->last_status,
                         'occupation' => $request->occupation,
                         'leased_duration' => $request->leased_duration,
                         'no_of_occupants' => $request->no_of_occupants,
@@ -357,7 +315,6 @@ class ApiController extends Controller
                         $cnic_frontfileimg->save($cnic_frontfilefilePath . '/' . $cnic_frontfileimage);
                         $cnic_front_file_name = $cnic_frontfileimage;
 
-
                         // Cnic Back
                         $cnic_backfile = $request->file('cnic_back');
                         $cnic_backfileimage = 'File-' . uniqid() . '-' . $cnic_backfile->getClientOriginalName();
@@ -366,7 +323,6 @@ class ApiController extends Controller
                         if (!File::isDirectory($cnic_backfilefilePath)) {
                             File::makeDirectory($cnic_backfilefilePath, 0777, true, true);
                         }
-
                         $cnic_backfileimg = Image::make($cnic_backfile->getRealPath()); // Corrected $file to $cnic_backfile
                         $cnic_backfileimg->save($cnic_backfilefilePath . '/' . $cnic_backfileimage);
                         $cnic_back_file_name = $cnic_backfileimage;
@@ -386,7 +342,6 @@ class ApiController extends Controller
                             'postal_code' => $request->postal_code,
                             'verification_token' => Str::random(64)
                         ]);
-
                         ServiceProvider::create([
                             'user_id' => $user->id,
                             'services' => $request->services,
@@ -406,9 +361,8 @@ class ApiController extends Controller
                         ], 202);
                         // return response()->json(['message' => 'Certification & CNIC is Required'], 400);
                     }
-
-                } else {
-
+                }
+                else {
                     if ($request->file('cnic_front') && $request->file('cnic_back')) {
                         // Cnic Front
                         $cnic_frontfile = $request->file('cnic_front');
@@ -431,7 +385,6 @@ class ApiController extends Controller
                         if (!File::isDirectory($cnic_backfilefilePath)) {
                             File::makeDirectory($cnic_backfilefilePath, 0777, true, true);
                         }
-
                         $cnic_backfileimg = Image::make($cnic_backfile->getRealPath());
                         $cnic_backfileimg->save($cnic_backfilefilePath . '/' . $cnic_backfileimage);
                         $cnic_back_file_name = $cnic_backfileimage;
@@ -459,10 +412,8 @@ class ApiController extends Controller
                             'availability_end_time' => $request->availability_end_time,
                             'certification' => $request->certification
                         ]);
-
-                    } else {
-
-                   
+                    }
+                    else {
                         return response()->json([
                             'status' => false,
                             'messages' => 'CNIC is Required',
@@ -478,74 +429,6 @@ class ApiController extends Controller
                     'data' => []
                 ], 202);
             }
-
-        } elseif ($request->role_id == 4) {
-            $user = User::create([
-                'fullname' => $request->fullname,
-                'email' => $request->email,
-                'username' => $request->username,
-                'phone_number' => $request->phone_number,
-                'password' => Hash::make($request->password),
-                'role_id' => $request->role_id,
-                'profileimage' => $image_name,
-                'platform' => $request->platform,
-                'device_token' => $request->device_token,
-                'address' => $request->address,
-                'postal_code' => $request->postal_code,
-                'verification_token' => Str::random(64)
-            ]);
-
-
-            Visitor::create([
-                'user_id' => $user->id,
-            ]);
-
-        }
-        $this->sendVerificationEmail($user);
-        return response()->json([
-            'status' => true,
-            'messages' => 'Registered Successfully , Please check your Email to Verify'
-
-        ], 200);
-    }
-    protected function sendVerificationEmail($user)
-    {
-        $verificationLink = url('verify-email/' . $user->verification_token);
-
-        Mail::send('emails.verifyEmail', ['link' => $verificationLink, 'user' => $user], function ($message) use ($user) {
-            $message->to($user->email);
-            $message->subject('Verify your email');
-        });
-    }
-    public function verifyEmail($token)
-    {
-
-        $user = User::where('verification_token', $token)->first();
-
-
-        if (!$user) {
-            return view('emails.email_verification_failure', [
-                'message' => 'Invalid verification link.'
-            ]);
-        }
-
-        if ($user->_is_verified) {
-            return view('emails.email_verification_success', [
-                'message' => 'Your email is already verified.'
-            ]);
-        }
-
-
-        $user->is_verified = 1;
-        $user->verification_token = null;
-        $user->save();
-
-        return view('emails.email_verification_success', [
-            'message' => 'Your email has been verified successfully!'
-        ]);
-    }
-    public function updateProfile(Request $request)
-
             elseif ($request->role_id == 4) {
                 $user = User::create([
                     'fullname' => $request->fullname,
@@ -614,7 +497,6 @@ class ApiController extends Controller
         }
 
         public function updateProfile(Request $request)
->>>>>>> ishaq
     {
         $user = Auth::user();
         $validator = Validator::make($request->all(), [
@@ -643,7 +525,6 @@ class ApiController extends Controller
             if (!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 0777, true, true);
             }
-
             $img = Image::make($profileimage->getRealPath());
             $img->save($filePath . '/' . $image);
             $image_name = $image;
@@ -695,7 +576,6 @@ class ApiController extends Controller
                 'error' => 'invalid current password'
             ], 202);
         }
-
         $update_data = array(
             'password' => Hash::make($request->password)
         );
@@ -707,7 +587,6 @@ class ApiController extends Controller
         ], 200);
 
     }
-
     public function userLogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -739,57 +618,6 @@ class ApiController extends Controller
             'hashed_password' => $user->password, // Caution: This exposes sensitive data
         ], 401);
     }
-
-
-        if (Auth::attempt($credentials)) {
-            if (Auth::check()) {
-
-                $user = Auth::user();
-                if ($user->is_verified == 0) {
-
-                    return response()->json([
-                        'error' => 'Your email address is not verified. Please verify your email to log in.'
-                    ], 403);
-                }
-                $token = $user->createToken('authToken')->plainTextToken;
-                // echo $user->role_id;
-                // exit;
-                if ($user->role_id != '5') {
-                    if ($request->has('device_token')) {
-                        $user->update(['device_token' => $request->device_token, 'platform' => $request->platform]);
-                    } else {
-                        return response()->json([
-                            'status' => false,
-                            'messages' => 'Device Token & Platform is Required '
-                        ], 202);
-                    }
-                }
-
-                $expiryDate = Carbon::now()->subDays(15);
-                Contract::where('status', 0)
-                    ->where('created_at', '<', $expiryDate)
-                    ->update(['status' => 3]);
-                $option = [
-                    'title' => 'Login',
-                    'body' => $user->name . 'Sign In With this device',
-                    'created_by' => Auth::id(),
-                    'created_to' => $user->id,
-                ];
-                $this->sendNotification($option);
-                return response()->json([
-                    'status' => true,
-                    'messages' => 'Login Successfully',
-                    'data' => $user,
-                    // 'notification' => $notification,
-                    'token' => $token
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'messages' => 'Invalid Crediational'
-                ], 202);
-            }
-
     if (Auth::attempt($credentials)) {
         if (Auth::check()) {
 
@@ -832,29 +660,11 @@ class ApiController extends Controller
                 // 'notification' => $notification,
                 'token' => $token
             ], 200);
-
         } else {
             return response()->json([
                 'status' => false,
                 'messages' => 'Invalid Crediational'
             ], 202);
-
-            // return response()->json([ 'status'=>false,'message' => 'Invalid Crediational','data' => []], 400);
-        }
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        return response()->json([
-            'status' => true,
-            'messages' => 'Successfully logged out'
-        ], 200);
-        // return response()->json(['message' => 'Successfully logged out'], 200);
-    }
-
-    public function getProperties(Request $request)
-=======
         }
     } else {
         return response()->json([
@@ -876,7 +686,6 @@ public function logout(Request $request)
 }
 
 public function getProperties(Request $request)
->>>>>>> ishaq
     {
 
         if (!$request->has('user_id')) {
@@ -905,10 +714,6 @@ public function getProperties(Request $request)
                 $s->is_favorite = false;
             }
         }
-
-
-
-
         return response()->json([
             'status' => true,
             'message' => 'Properties Found',
@@ -925,12 +730,8 @@ public function getProperties(Request $request)
             ], 202);
         }
 
-
-        if ($request->type && $request->city && $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom) {
-
         if ($request->type && $request->city && 
         $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom) {
-
 
             $bill_image_name = '';
             $comma_separated_names = '';
@@ -972,7 +773,6 @@ public function getProperties(Request $request)
                     'data' => []
                 ], 202);
             }
-
             Property::create([
                 'user_id' => $request->user_id,
                 'type' => $request->type,
@@ -1001,12 +801,6 @@ public function getProperties(Request $request)
                 'messages' => 'Fill Required Fields',
                 'data' => []
             ], 202);
-
-            // return response()->json([ 'message' => 'Fill Required Fields'], 400);
-        }
-    }
-
-
             // return response()->json(['message' => 'Property Added Successfully...'], 200);
         } else {
             return response()->json([
@@ -1017,7 +811,6 @@ public function getProperties(Request $request)
             // return response()->json([ 'message' => 'Fill Required Fields'], 400);
         }
     }
-
     public function updateProperty(Request $request, $id)
     {
         if (!$request->has('user_id')) {
@@ -1039,19 +832,11 @@ public function getProperties(Request $request)
             // return response()->json(['message' => 'Property not found'], 404);
         }
 
-
-        if ($request->type && $request->city && $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom) {
-
-            $bill_image_name = '';
-            $comma_separated_names = '';
-
-
         if ($request->type && $request->city &&
         $request->amount && $request->address && $request->lat && $request->long && $request->area_range && $request->bedroom && $request->bathroom) {
 
             $bill_image_name = '';
             $comma_separated_names = '';
-
             if ($request->file('electricity_bill')) {
                 // Delete previous electricity bill if exists
                 if ($property->electricity_bill) {
@@ -1078,8 +863,6 @@ public function getProperties(Request $request)
                 ], 202);
                 // return response()->json(['message' => 'Electricity Bill Required'], 400);
             }
-
-
             if ($request->hasFile('property_images')) {
                 if ($property->images) {
                     $previousImages = explode(',', $property->images);
@@ -1111,14 +894,8 @@ public function getProperties(Request $request)
                     'data' => []
                 ], 202);
             }
-
-
-            // Update property
-            $property->update([
-
               // Update property
               $property->update([
-
                 'user_id' => $request->user_id,
                 'type' => $request->type,
                 'city' => $request->city,
@@ -1308,7 +1085,6 @@ public function getProperties(Request $request)
                     'messages' => $validation->messages()->toArray()
                 ], 200);
             } else {
-
                 $comma_separated_names = '';
                 if ($request->hasFile('media')) {
                     $files = $request->file('media');
@@ -1342,7 +1118,6 @@ public function getProperties(Request $request)
                     'additional_information' => $request->additional_information
 
                 ]);
-
                 return response()->json([
                     'status' => true,
                     'messages' => 'Service Added Successfully...'
@@ -1358,10 +1133,7 @@ public function getProperties(Request $request)
         //     ], 202);
         // }
 
-
-        // if($request->service_name && $request->pricing && $request->lat && $request->long && $request->location && $request->start_time && $request->end_time && $request->country && $request->city){
-
-
+        // if($request->service_name && $request->pricing && $request->lat && $request->long && $request->location && $request->start_time && $reque>
 
         // $comma_separated_names = '';
         // if ($request->hasFile('media')) {
@@ -1373,11 +1145,7 @@ public function getProperties(Request $request)
         //         if (!File::isDirectory($filefilePath)) {
         //             File::makeDirectory($filefilePath, 0777, true, true);
         //         }
-
-        //         $fileimg = Image::make($file->getRealPath());
-
          //         $fileimg = Image::make($file->getRealPath());
-
         //         $fileimg->save($filefilePath . '/' . $file_image);
         //         $file_names[] = $file_image;
         //     }
@@ -1438,7 +1206,6 @@ public function getProperties(Request $request)
         if ($request->service_name && $request->pricing && $request->lat && $request->long && $request->location && $request->start_time && $request->end_time) {
             $comma_separated_names = '';
 
-
             if ($request->hasFile('media')) {
                 if ($service->media) {
                     $previousImages = explode(',', $service->media);
@@ -1486,9 +1253,8 @@ public function getProperties(Request $request)
                 'status' => true,
                 'messages' => 'Service Updated Successfully...'
             ], 200);
-
-        } else {
-
+        }
+        else {
             return response()->json([
                 'status' => false,
                 'messages' => 'Fill Required Fields',
@@ -1496,7 +1262,6 @@ public function getProperties(Request $request)
             ], 202);
         }
     }
-
     public function destroyService($id)
     {
         $service = Service::find($id);
@@ -1536,20 +1301,11 @@ public function getProperties(Request $request)
         $city = $request->input('city');
 
         if($request->user_id){
-            $serviceQuery = Service::where('user_id', $userId)
-            ->with(['user', 'provider', 'serviceProviderRequests']);
-            //$serviceQuery = Service::where('user_id',$userId)->with('user', 'provider', 'servicesproviderrequest');
-        }else{
-            $serviceQuery = Service::with('user', 'provider');
-
-
-        if($request->user_id){
            // $serviceQuery = Service::where('user_id',$userId)->with('user', 'provider');
            $serviceQuery = Service::where('user_id', $userId)
             ->with(['user', 'provider', 'serviceProviderRequests']);
         }else{
             $serviceQuery = Service::with('user', 'provider', 'serviceProviderRequests');
-
         }
         if ($min && $max) {
             $serviceQuery->whereBetween('pricing', [$min, $max]);
@@ -1579,9 +1335,6 @@ public function getProperties(Request $request)
                 'message' => 'Service not found'
             ], 404);
         }
-
-
-
         foreach ($services as $s) {
             $favoriteService = FavouriteService::where('user_id', $userId)->where('service_id', $s->id)->where('fav_flag', 1)->first();
 
@@ -1653,7 +1406,6 @@ public function getProperties(Request $request)
             'data' => $services
         ], 200);
     }
-
     public function getService($id)
     {
         $userId = Auth::id();
@@ -1742,7 +1494,6 @@ public function getProperties(Request $request)
                 ->where('provider_id', $providerId)
                 ->first();
             if ($fav_provider) {
-
                 $fav_provider->update([
                     'user_id' => $userId,
                     'provider_id' => $providerId,
@@ -1761,7 +1512,6 @@ public function getProperties(Request $request)
         }
 
     }
-
     public function addFavouriteProperty(Request $request)
     {
         $userId = $request->input('user_id');
@@ -1790,133 +1540,13 @@ public function getProperties(Request $request)
             FavouriteProperty::where('user_id', $userId)
                 ->where('property_id', $propertyId)
                 ->delete();
-
-
-            FavouriteProperty::create([
-                'user_id' => $userId,
-                'property_id' => $propertyId,
-                'fav_flag' => $fav
-            ]);
-            return response()->json([
-                'status' => true,
-                'messages' => 'Successfully created'
-            ], 200);
-
-
-        } else if ($fav == 2) {
-            $fav_property = FavouriteProperty::where('user_id', $userId)
-                ->where('property_id', $propertyId)
-                ->first();
-            if ($fav_property) {
-
-                $fav_property->update([
-
                 FavouriteProperty::create([
-
                     'user_id' => $userId,
                     'property_id' => $propertyId,
                     'fav_flag' => $fav
                 ]);
                 return response()->json([
                     'status' => true,
-
-                    'messages' => 'Favourite updated successfully.'
-                ], 200);
-            }
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Favourite flag incorrect'
-            ], 400);
-        }
-    }
-
-    public function getFavourite(Request $request)
-    {
-        $userId = $request->input('user_id');
-
-        if (!$userId) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User Id Required'
-            ], 400);
-        }
-
-        // $favoriteProviders = FavouriteProvider::with(['provider'])
-        //                                   ->where('user_id', $userId)
-        //                                   ->where('fav_flag', 1)
-        //                                   ->orderByDesc('created_at')
-        //                                   ->get();
-
-        $favoriteService = FavouriteService::with(['service'])
-            ->where('user_id', $userId)
-            ->where('fav_flag', 1)
-            ->orderByDesc('created_at')
-            ->paginate(20);
-
-        // Retrieve favorite properties with their related data
-        $favoriteProperties = FavouriteProperty::with('property')
-            ->where('user_id', $userId)
-            ->where('fav_flag', 1)
-            ->orderByDesc('created_at')
-            ->paginate(20);
-
-
-        if ($favoriteService->isEmpty() && $favoriteProperties->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], 200);
-        }
-
-        return response()->json([
-            'status' => true,
-            // 'favorite_service_providers' => $favoriteProviders,
-            'favorite_services' => $favoriteService,
-            'favorite_properties' => $favoriteProperties,
-            'message' => 'Data found.'
-        ], 200);
-
-    }
-
-    public function getServiceProviders(Request $request)
-    {
-
-        $serviceproviders = ServiceProvider::with('user')->paginate(20);
-        if ($serviceproviders->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Service Providers not found',
-                'data' => []
-            ], 404);
-        }
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Service Providers Found',
-            'data' => $serviceproviders
-        ], 200);
-    }
-
-    public function getServiceProvider($id)
-    {
-        $serviceprovider = ServiceProvider::with('user')->find($id);
-
-        if (!$serviceprovider) {
-            return response()->json([
-                'status' => false,
-                'messages' => 'Service Provider not found'
-            ], 202);
-        }
-        return response()->json([
-            'status' => true,
-            'message' => 'Service Provider Found',
-            'data' => $serviceprovider
-        ], 200);
-
-    }
-    public function getUserByName(Request $request)
-
                     'messages' => 'Successfully created'
                 ], 200);
     
@@ -2029,7 +1659,6 @@ public function getProperties(Request $request)
             }
 
             public function getUserByName(Request $request)
-
     {
         // Validate the request to ensure 'username_or_email' is provided
         $request->validate([
@@ -2103,9 +1732,6 @@ public function getProperties(Request $request)
                 'message' => 'Service Provider Id Required'
             ], 400);
         }
-
-
-
         if ($request->address && $request->lat && $request->long && $request->property_type && $request->date && $request->time) {
 
             ServiceProviderRequest::create([
@@ -2116,17 +1742,10 @@ public function getProperties(Request $request)
                 'lat' => $request->lat,
                 'long' => $request->long,
                 'property_type' => $request->property_type,
-
-                'price' => $request->price ?? null,
-                'date' => $request->date,
-                'postal_code'=>$request->postal_code,
-                'is_applied'=>$request->is_applied,
-
                 'price' => $request->price,
                 'date' => $request->date,
                 'is_applied'=>$request->is_applied,
                 'postal_code'=>$request->postal_code, 
-
                 'time' => $request->time,
                 'description' => $request->description,
                 'additional_info' => $request->additional_info,
@@ -2163,12 +1782,8 @@ public function getProperties(Request $request)
             ], 400);
         }
 
-
-        $requests = ServiceProviderRequest::with(['property_type', 'user', 'service'])->whereserviceprovider_id($serviceprovider_id)->orderByDesc('created_at')->paginate(20);
-
         $requests = ServiceProviderRequest::with
 (['property_type', 'user', 'service'])->whereserviceprovider_id($serviceprovider_id)->orderByDesc('created_at')->paginate(20);
-
         return response()->json([
             'status' => true,
             'data' => $requests,
@@ -2189,12 +1804,8 @@ public function getProperties(Request $request)
             ], 400);
         }
 
-
-        $requests = ServiceProviderRequest::with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapproved('0')->orderByDesc('created_at')->paginate(20);
-
         $requests = ServiceProviderRequest::
 with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapproved('0')->orderByDesc('created_at')->paginate(20);
-
 
         return response()->json([
             'status' => true,
@@ -2248,7 +1859,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
                 'message' => 'Request Id Required'
             ], 400);
         }
-
         ServiceProviderJob::create([
             'user_id' => $userId,
             'provider_id' => $provider_id,
@@ -2267,9 +1877,7 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
         $service_request = ServiceProviderRequest::find($request_id);
         $service_request->update([
             'approved' => 1,
-
              'is_applied'=>0,
-
             'decline' => 0
         ]);
 
@@ -2285,7 +1893,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             'status' => true,
             'message' => 'Successfully created'
         ], 200);
-
     }
 
     public function getServiceJob(Request $request)
@@ -2310,7 +1917,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
         }
 
         $request_id = $request->input('request_id');
-
         if (!$request_id) {
             return response()->json([
                 'status' => false,
@@ -2377,12 +1983,8 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
         $service_request = ServiceProviderRequest::find($request_id);
         $service_request->update([
             'approved' => 0,
-
-            'decline' => 1
-
             'decline' => 1,
             'is_applied'=>0,
-
         ]);
         $option = [
             'title' => 'Request Approved',
@@ -2396,7 +1998,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             'status' => true,
             'message' => 'Successfully created'
         ], 200);
-
     }
 
     public function markServiceStatusJob(Request $request)
@@ -2530,7 +2131,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             $stat['pending_contract'] = $pending_contract;
             $stat['total_properties'] = $total_properties;
             $stat['total_spend'] = '2000';
-
             return response()->json([
                 'status' => true,
                 'data' => $stat,
@@ -2625,12 +2225,12 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             ], 400);
         }
 
-
-        $pending = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
-        $completed = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('1')->orderByDesc('created_at')->paginate(20);
-        $rejected = ServiceProviderJob::with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('2')->orderByDesc('created_at')->paginate(20);
-
-       
+        $pending = ServiceProviderJob::
+with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
+        $completed = ServiceProviderJob::
+with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('1')->orderByDesc('created_at')->paginate(20);
+        $rejected = ServiceProviderJob::
+with(['request', 'request.service', 'provider'])->whereuser_id($userId)->wherestatus('2')->orderByDesc('created_at')->paginate(20);
 
         $data = [
             'pending_jobs' => $pending,
@@ -2649,9 +2249,8 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
     public function getServiceProvidersJob()
     {
         $userId = Auth::id();
-
-        $jobs = ServiceProviderJob::with(['request', 'provider'])->whereprovider_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
-
+        $jobs = ServiceProviderJob::
+with(['request', 'provider'])->whereprovider_id($userId)->wherestatus('0')->orderByDesc('created_at')->paginate(20);
 
         if ($jobs->isEmpty()) {
             return response()->json([
@@ -2854,7 +2453,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
 
     }
 
-
     public function getNotificationByUserId()
     {
 
@@ -2952,8 +2550,7 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             $request->noticePeriodForTermination &&
             $request->latePaymentFee &&
             $request->rentalIncentives &&
-
-
+            $request->rentalIncentives &&
             $request->additionalTerms
         ) {
             Contract::create([
@@ -3141,9 +2738,7 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-
-                'Authorization: Bearer AAAAwG3fBRY:APA91bGswE_GtChlZU3fq5A6iLypoG90MsPnx7TRTzAhM3HuPgKiL9RbHhAFNw0QmZFUSbj6vMXEZ1YtNNweKYvmt3BNm5VK-hmbBCYxU6llDzU-5Mh_Vyp2_uhCHHtvE3TgsswxdJTL'
-
+                      'Authorization: Bearer AAAAwG3fBRY:APA91bGswE_GtChlZU3fq5A6iLypoG90MsPnx7TRTzAhM3HuPgKiL9RbHhAFNw0QmZFUSbj6vMXEZ1YtNNweKYvmt3BNm5VK-hmbBCYxU6llDzU-5Mh_Vyp2_uhCHHtvE3TgsswxdJTL'
             ),
         ));
 
@@ -3156,7 +2751,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             'created_to' => $created_to,
             'action_date' => Carbon::now()
         ]);
-
         curl_close($curl);
 
         return $response;
@@ -3179,7 +2773,7 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
     //     $type = $request->input('type');
     //     if ($type == 1) {
     //         $messagefile = $request->file('message');
-
+    
     //         if (!$messagefile) {
     //             return response()->json([
     //                 'status' => false,
@@ -3206,10 +2800,7 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
     //         ], 400);
     //     }
 
-
-
-    //     $message = Message::create([
-
+     //     $message = Message::create([
     //         'sender_id' => Auth::id(),
     //         'receiver_id' => $receiver_id,
     //         'message' => $message,
@@ -3252,10 +2843,7 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             ->pluck('receiver_id');
         // $user_ids = array_unique(array_merge($sender_ids->toArray(), $receiver_ids->toArray()));
         $inboxListing = [];
-
-
-        foreach ($user_ids as $user_id) {
-
+         foreach ($user_ids as $user_id) {
             // Retrieve user details
             $user = User::find($user_id);
 
@@ -3345,7 +2933,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
                 'message' => $validator->messages()->toArray()
             ], 422); // Use 422 for validation failures
         }
-
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return response()->json([
@@ -3378,7 +2965,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
                 'email' => $request->email,
                 'token' => $customToken ?? $tokenData->token,
             ];
-
             Mail::to($request->email)->send(new UserMail($mailData));
             return response()->json([
                 'status' => true,
@@ -3454,7 +3040,6 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
             return redirect()->route('expired')->with('error', 'Invalid password reset link.');
         }
 
-
          // Proceed with password reset
          $user = User::where('email', $request->email)->first();
          $user->password = Hash::make($request->password);
@@ -3490,4 +3075,3 @@ with(['property_type', 'provider', 'service'])->whereuser_id($user_id)->whereapp
  
  
  }
-
