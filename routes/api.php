@@ -177,5 +177,3 @@ Route::view('/socket', 'socket')->name('socket');
 Route::post('/websocket', ['uses' => 'App\Http\Controllers\WebSocketController@handleWebSocket', 'as' => 'handleWebSocket']);
 Route::post('/admin-register', ['uses' => 'App\Http\Controllers\DashboardController@adminRegister', 'as' => 'adminregister']);
 
-
-
