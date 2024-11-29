@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,5 @@ Route::get('/clear', function () {
 Route::get('/test', function () {
     return view('test');
 });
+
+Route::get('/verify-email/{token}', [ApiController::class, 'verifyEmail']);

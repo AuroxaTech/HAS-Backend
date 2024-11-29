@@ -200,6 +200,7 @@ class ApiController extends Controller
                     'device_token' => $request->device_token,
                     'address' => $request->address,
                     'postal_code' => $request->postal_code,
+                    'verification_token' => Str::random(64)
                 ]);
     
                 Landlord::create([
@@ -250,6 +251,7 @@ class ApiController extends Controller
                         'device_token' => $request->device_token,
                         'address' => $request->address,
                         'postal_code' => $request->postal_code,
+                        'verification_token' => Str::random(64)
                     ]);
     
                     Tenant::create([
@@ -280,7 +282,8 @@ class ApiController extends Controller
                         'role_id' => $request->role_id,
                         'profileimage' => $image_name,
                         'platform' => $request->platform,
-                        'device_token' => $request->device_token
+                        'device_token' => $request->device_token,
+                        'verification_token' => Str::random(64)
                     ]);
     
                     Tenant::create([
@@ -354,6 +357,7 @@ class ApiController extends Controller
                             'device_token' => $request->device_token,
                             'address' => $request->address,
                             'postal_code' => $request->postal_code,
+                            'verification_token' => Str::random(64)
                         ]);
     
                         ServiceProvider::create([
@@ -412,7 +416,8 @@ class ApiController extends Controller
                             'role_id' => $request->role_id,
                             'profileimage' => $image_name,
                             'platform' => $request->platform,
-                            'device_token' => $request->device_token
+                            'device_token' => $request->device_token,
+                            'verification_token' => Str::random(64)
                         ]);
     
                         ServiceProvider::create([
@@ -445,6 +450,7 @@ class ApiController extends Controller
             $user = User::create([
                 'fullname' => $request->fullname,
                 'email' => $request->email,
+                'username' => $request->username,
                 'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'role_id' => $request->role_id,
@@ -453,6 +459,7 @@ class ApiController extends Controller
                 'device_token' => $request->device_token,
                 'address' => $request->address,
                 'postal_code' => $request->postal_code,
+                'verification_token' => Str::random(64)
             ]);
     
             Visitor::create([
@@ -460,10 +467,47 @@ class ApiController extends Controller
             ]);
         }
 
+        $this->sendVerificationEmail($user);
         return response()->json([
             'status' => true,
-            'messages' => 'Registered Successfully'
+            'messages' => 'Registered Successfully , Please check your Email to Verify'
+
         ], 200);
+    }
+    protected function sendVerificationEmail($user)
+    {
+        $verificationLink = url('verify-email/' . $user->verification_token);
+        Mail::send('emails.verifyEmail', ['link' => $verificationLink, 'user' => $user], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Verify your email');
+        });
+    }
+    public function verifyEmail($token)
+    {
+
+        $user = User::where('verification_token', $token)->first();
+
+
+        if (!$user) {
+            return view('emails.email_verification_failure', [
+                'message' => 'Invalid verification link.'
+            ]);
+        }
+
+        if ($user->_is_verified) {
+            return view('emails.email_verification_success', [
+                'message' => 'Your email is already verified.'
+            ]);
+        }
+
+
+        $user->is_verified = 1;
+        $user->verification_token = null;
+        $user->save();
+
+        return view('emails.email_verification_success', [
+            'message' => 'Your email has been verified successfully!'
+        ]);
     }
 
     public function updateProfile(Request $request)
