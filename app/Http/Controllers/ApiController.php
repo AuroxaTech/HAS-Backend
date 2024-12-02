@@ -1771,7 +1771,7 @@ class ApiController extends Controller
     }
 
     public function getServiceProviderRequest($id){
-        $request = ServiceProviderRequest::with(['property_type','provider','service'])->find($id);
+        $request = ServiceProviderRequest::with(['property_type','provider','service', 'user', 'serviceProviderRequests'])->find($id);
 
         if (!$request) {
             return response()->json([
