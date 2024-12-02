@@ -42,5 +42,9 @@ class ServiceProviderRequest extends Model
     public function property_type(){
         return $this->belongsTo(PropertyType::class,'property_type','id');
     }
+    public function serviceProviderRequests()
+    {
+        return $this->hasMany(ServiceProviderRequest::class, 'service_id', 'id');
+    }
 
 }

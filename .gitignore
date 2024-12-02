@@ -5,6 +5,7 @@
 /storage/*.key
 /vendor
 .env
+temp_auto_push.bat
 .env.backup
 .phpunit.result.cache
 Homestead.json
@@ -13,4 +14,5 @@ auth.json
 npm-debug.log
 yarn-error.log
 /.idea
-/.vscode
+.gitignore
+branch_structure.json
